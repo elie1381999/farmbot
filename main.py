@@ -1,6 +1,10 @@
 # main.py
 import os
 import logging
+import asyncio
+from fastapi import FastAPI, Request, Response
+import uvicorn
+
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -11,11 +15,11 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 
+# your existing modules (must be in the same package/repo)
 from core_singleton import farm_core
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 
-# Import everything crop/harvest/edit related from aboutcrop
 from aboutcrop import (
     add_crop_start_callback,
     add_crop_name_handler,
@@ -46,7 +50,6 @@ from aboutcrop import (
     HARVEST_STATES,
 )
 
-# aboutmoney
 from aboutmoney import (
     add_expense,
     expense_crop,
@@ -61,7 +64,6 @@ from aboutmoney import (
     PAYMENT_STATES,
 )
 
-# abouttreatment (new inline-first treatment flow)
 from abouttreatment import (
     add_treatment,
     treatment_crop,
@@ -74,22 +76,23 @@ from abouttreatment import (
     TREATMENT_STATES,
 )
 
-# Enable logging
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+# Logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
 logger = logging.getLogger(__name__)
 
-# Cancel command
+# Helper command handlers (cancel/help/my_account/handle_message) -- kept exactly as in your original file
 async def cancel(update: Update, context) -> int:
     farmer = farm_core.get_farmer(update.effective_user.id)
     lang = farmer['language'] if farmer else 'ar'
-    # when cancelling, show main keyboard
     if update.message:
         await update.message.reply_text("تم الإلغاء." if lang == 'ar' else "Cancelled.", reply_markup=get_main_keyboard(lang))
     elif update.callback_query:
         await update.callback_query.message.reply_text("تم الإلغاء." if lang == 'ar' else "Cancelled.", reply_markup=get_main_keyboard(lang))
     return ConversationHandler.END
 
-# Help command
 async def help_command(update: Update, context) -> None:
     farmer = farm_core.get_farmer(update.effective_user.id)
     lang = farmer['language'] if farmer else 'ar'
@@ -97,8 +100,7 @@ async def help_command(update: Update, context) -> None:
         "❓ مساعدة:\n\n"
         "• 🇱🇧 حسابي: عرض معلومات الحساب\n"
         "• 🌾 محاصيلي: عرض جميع المحاصيل\n"
-        "• 🧾 سجل الحصاد: تسجيل حصاد جديد\n"
-        "• 💵 المدفوعات المعلقة: عرض المدفوعات المتوقعة\n"
+        "• 🧾 سجل الحصاد: تسجيل حصاد جديد\n        • 💵 المدفوعات المعلقة: عرض المدفوعات المتوقعة\n"
         "• 🗓️ التسميد/علاج: إضافة علاج أو تسميد\n"
         "• 💸 مصاريف: تسجيل المصاريف\n"
         "• 📈 الأسعار بالسوق: عرض أسعار السوق\n"
@@ -116,7 +118,6 @@ async def help_command(update: Update, context) -> None:
     )
     await update.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
 
-# My account
 async def my_account(update: Update, context) -> None:
     farmer = farm_core.get_farmer(update.effective_user.id)
     if not farmer:
@@ -129,7 +130,6 @@ async def my_account(update: Update, context) -> None:
         reply_markup=get_main_keyboard(lang)
     )
 
-# Handle main menu selections (text from main ReplyKeyboard)
 async def handle_message(update: Update, context) -> None:
     text = update.message.text or ""
     farmer = farm_core.get_farmer(update.effective_user.id)
@@ -148,20 +148,16 @@ async def handle_message(update: Update, context) -> None:
     elif text in ["❓مساعدة", "❓Help"]:
         await help_command(update, context)
     elif text in ["💸 مصاريف", "💸 Expenses"]:
-        # start expense flow
         await add_expense(update, context)
     elif text in ["💵 المدفوعات المعلقة", "💵 Pending Payments"]:
         await pending_payments(update, context)
     elif text in ["🗓️ التسميد/علاج", "🗓️ Fertilize & Treat"]:
-        # start treatment flow
         await add_treatment(update, context)
     else:
-        # fallback
         await update.message.reply_text("أمر غير معروف. استخدم /help" if lang == 'ar' else "Unknown command. Use /help", reply_markup=get_main_keyboard(lang))
 
-def main() -> None:
-    application = Application.builder().token(os.environ.get("TELEGRAM_BOT_TOKEN")).build()
-
+# Build and register handlers into the provided Application instance
+def register_handlers(application: Application):
     # Registration conversation handler
     reg_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
@@ -174,7 +170,6 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", cancel)]
     )
 
-    # Add crop conversation handler — entry point is the inline "Add Crop" button (callback)
     add_crop_conv = ConversationHandler(
         entry_points=[CallbackQueryHandler(add_crop_start_callback, pattern=r"^crop_add$")],
         states={
@@ -186,7 +181,6 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Harvest conversation handler (inline-first)
     harvest_conv_handler = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex("^(🧾 سجل الحصاد|🧾 Record Harvest)$"), record_harvest)],
         states={
@@ -218,7 +212,6 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Edit conversation: started by callback crop_edit:<id>
     edit_conv = ConversationHandler(
         entry_points=[CallbackQueryHandler(crop_edit_entry_callback, pattern=r"^crop_edit:")],
         states={
@@ -231,7 +224,6 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Expense conversation (entry via menu text or button)
     expense_conv = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex("^(💸 مصاريف|💸 Expenses)$"), add_expense)],
         states={
@@ -244,7 +236,6 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Payment marking conversation (started via inline "Mark Paid" button)
     payment_conv = ConversationHandler(
         entry_points=[CallbackQueryHandler(mark_paid_callback, pattern=r"^paid_")],
         states={
@@ -254,7 +245,6 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Treatment conversation (inline-first)
     treatment_conv = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex("^(🗓️ التسميد/علاج|🗓️ Fertilize & Treat)$"), add_treatment)],
         states={
@@ -281,7 +271,7 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Register handlers
+    # Register handlers into the application
     application.add_handler(reg_conv_handler)
     application.add_handler(add_crop_conv)
     application.add_handler(harvest_conv_handler)
@@ -290,9 +280,8 @@ def main() -> None:
     application.add_handler(payment_conv)
     application.add_handler(treatment_conv)
 
-    # Generic handlers and callback handlers (from aboutcrop)
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))  # main menu text handler
-    application.add_handler(CallbackQueryHandler(crops_callback_handler, pattern=r"^crop_page:"))  # pagination/navigation
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    application.add_handler(CallbackQueryHandler(crops_callback_handler, pattern=r"^crop_page:"))
     application.add_handler(CallbackQueryHandler(crops_callback_handler, pattern=r"^prefcrop:"))
     application.add_handler(CallbackQueryHandler(crop_manage_callback, pattern=r"^crop_manage:"))
     application.add_handler(CallbackQueryHandler(crop_delete_callback, pattern=r"^crop_delete:"))
@@ -301,27 +290,90 @@ def main() -> None:
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("cancel", cancel))
 
-    # aboutcrop inline-only callbacks
     application.add_handler(CallbackQueryHandler(harvest_select_callback, pattern=r"^harvest_select:"))
     application.add_handler(CallbackQueryHandler(harvest_date_callback, pattern=r"^harvest_date:"))
     application.add_handler(CallbackQueryHandler(harvest_delivery_callback, pattern=r"^harvest_delivery:"))
     application.add_handler(CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest_skip:"))
     application.add_handler(CallbackQueryHandler(addcrop_skip_notes_callback, pattern=r"^addcrop_skip_notes$"))
 
-    # aboutmoney callbacks
     application.add_handler(CallbackQueryHandler(create_pending_callback, pattern=r"^create_pending:"))
     application.add_handler(CallbackQueryHandler(mark_paid_callback, pattern=r"^paid_"))
 
-    # abouttreatment inline callbacks used outside conv routing
     application.add_handler(CallbackQueryHandler(treatment_date_callback, pattern=r"^treatment_date:"))
     application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_skip:"))
     application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_next:"))
 
-    # Start the bot
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+# Create FastAPI app and the telegram Application
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+if not TELEGRAM_TOKEN:
+    logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
+    raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
 
+# Build the Application (PTB)
+telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
+
+# Register handlers into telegram_app
+register_handlers(telegram_app)
+
+# FastAPI app
+app = FastAPI()
+
+@app.get("/health")
+async def health():
+    return {"ok": True}
+
+@app.post("/")
+async def webhook(request: Request):
+    """
+    Receive Telegram update (JSON) and put it on the application's update queue
+    so the registered handlers will process it.
+    """
+    try:
+        data = await request.json()
+    except Exception as e:
+        logger.exception("Failed to parse JSON from request")
+        return Response(status_code=400, content="Invalid JSON")
+
+    # Convert to Update
+    try:
+        update = Update.de_json(data, telegram_app.bot)
+    except Exception:
+        # In case bot not initialized yet or other parsing problems
+        logger.exception("Failed to build Update from JSON")
+        return Response(status_code=400, content="Invalid update")
+
+    # Put the update on the application's queue for processing by handlers
+    try:
+        await telegram_app.update_queue.put(update)
+    except Exception:
+        logger.exception("Failed to enqueue update")
+        return Response(status_code=500, content="Failed to process update")
+
+    return {"ok": True}
+
+# Startup/shutdown handlers to initialize/start/stop Application properly
+@app.on_event("startup")
+async def on_startup():
+    logger.info("Starting telegram Application (initialize/start)...")
+    # initialize and start the application so handlers and job queues are ready
+    await telegram_app.initialize()
+    await telegram_app.start()
+    # the application will not poll because we push updates into update_queue via webhook
+    logger.info("Telegram Application started.")
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    logger.info("Stopping telegram Application (stop/shutdown)...")
+    await telegram_app.stop()
+    await telegram_app.shutdown()
+    logger.info("Telegram Application stopped.")
+
+# local dev entrypoint
 if __name__ == "__main__":
-    main()
+    # Useful when running locally (uvicorn will start FastAPI and call our startup events)
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+
 
 
 
@@ -4352,3 +4404,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main() """
+
