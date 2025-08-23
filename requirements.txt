@@ -1,27 +1,5 @@
-# Core web + ASGI
-fastapi==0.116.1
-uvicorn[standard]==0.18.3
-gunicorn==22.1.0
 
-# Telegram + HTTP client
 python-telegram-bot==20.8
 httpx==0.26.0
-
-# Supabase
 supabase==2.18.1
-postgrest==1.1.1
-realtime==2.7.0
-storage3==0.12.1
-supabase-auth==2.12.3
-supabase-functions==0.10.1
-
-# Utils & env
-python-dotenv==1.1.1
-pydantic==2.11.7
-python-dateutil==2.9.0.post0
-pyjwt==2.10.1
-requests==2.32.4
-
-# Extras (if you used these in your repo)
-uvloop==0.21.0
-websockets==15.0.1
+python-dotenv==1.0.0
