@@ -17,8 +17,9 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 
-# your existing modules (must be in the same package/repo)
-from core_singleton import farm_core, init_farm_core
+# core_singleton holds a module-level farm_core that will be initialized at startup
+import core_singleton
+
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 
@@ -89,7 +90,8 @@ logger = logging.getLogger(__name__)
 # Helper command handlers
 # -------------------------
 async def cancel(update: Update, context) -> int:
-    farmer = farm_core.get_farmer(update.effective_user.id)
+    # use core_singleton.farm_core (set on startup)
+    farmer = core_singleton.farm_core.get_farmer(update.effective_user.id) if core_singleton.farm_core else None
     lang = farmer['language'] if farmer else 'ar'
     if update.message:
         await update.message.reply_text("تم الإلغاء." if lang == 'ar' else "Cancelled.", reply_markup=get_main_keyboard(lang))
@@ -98,7 +100,7 @@ async def cancel(update: Update, context) -> int:
     return ConversationHandler.END
 
 async def help_command(update: Update, context) -> None:
-    farmer = farm_core.get_farmer(update.effective_user.id)
+    farmer = core_singleton.farm_core.get_farmer(update.effective_user.id) if core_singleton.farm_core else None
     lang = farmer['language'] if farmer else 'ar'
     help_text = (
         "❓ مساعدة:\n\n"
@@ -120,10 +122,15 @@ async def help_command(update: Update, context) -> None:
         "• 📈 Market Prices: View market prices\n"
         "• 📊 Weekly Summary: View weekly summary\n"
     )
-    await update.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
+    # handlers usually receive messages; protect against callback_query case
+    if update.message:
+        await update.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
+    else:
+        # fallback
+        await update.callback_query.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
 
 async def my_account(update: Update, context) -> None:
-    farmer = farm_core.get_farmer(update.effective_user.id)
+    farmer = core_singleton.farm_core.get_farmer(update.effective_user.id) if core_singleton.farm_core else None
     if not farmer:
         await update.message.reply_text("Create an account first. Use /start")
         return
@@ -136,7 +143,7 @@ async def my_account(update: Update, context) -> None:
 
 async def handle_message(update: Update, context) -> None:
     text = update.message.text or ""
-    farmer = farm_core.get_farmer(update.effective_user.id)
+    farmer = core_singleton.farm_core.get_farmer(update.effective_user.id) if core_singleton.farm_core else None
     lang = farmer['language'] if farmer else 'ar'
 
     if text in ["🇱🇧 حسابي", "🇱🇧 My Account"]:
@@ -368,20 +375,21 @@ async def on_startup():
     """
     global telegram_app
 
-    # Initialize FarmCore (Supabase) first
-    SUPABASE_URL = os.environ.get("SUPABASE_URL")
-    SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
     if not SUPABASE_URL or not SUPABASE_KEY:
-        logger.error("SUPABASE_URL or SUPABASE_KEY env var missing.")
-        raise RuntimeError("SUPABASE_URL and SUPABASE_KEY are required")
+        logger.error("SUPABASE_URL and SUPABASE_KEY must be set in environment")
+        raise RuntimeError("Supabase config missing")
 
-    init_farm_core(SUPABASE_URL, SUPABASE_KEY)
+    # initialize global farm core (makes core_singleton.farm_core available)
+    logger.info("Initializing FarmCore (Supabase REST client)...")
+    core_singleton.init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
     logger.info("FarmCore (Supabase REST client) initialized.")
 
-    # --- Now create/start Telegram application ---
-    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
     if not TELEGRAM_TOKEN:
         logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
+        # Fail fast so deploy doesn't silently start without a token
         raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
 
     logger.info("Creating telegram Application...")
@@ -396,6 +404,7 @@ async def on_startup():
     logger.info("Starting telegram Application...")
     await telegram_app.start()
 
+    # At this point telegram_app.update_queue exists and the webhook can put updates onto it
     logger.info("Telegram Application started.")
 
 @app.on_event("shutdown")
@@ -424,7 +433,6 @@ if __name__ == "__main__":
     # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
-
 
 
 
@@ -4452,6 +4460,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main() """
+
 
 
 
