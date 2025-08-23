@@ -1,9 +1,9 @@
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 gunicorn==23.0.0
-python-telegram-bot==20.6
+python-telegram-bot==20.4  # Downgraded to a version compatible with Python 3.13
 httpx==0.25.2
-supabase==1.0.3  # Downgraded to stable version
+supabase==1.0.3
 python-dotenv==1.0.0
 annotated-types==0.7.0
 anyio==3.7.1
