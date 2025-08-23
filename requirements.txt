@@ -4,4 +4,5 @@ gunicorn==23.0.0
 python-telegram-bot==20.6
 httpx==0.25.2
 supabase==2.4.0
+gotrue==2.8.1
 python-dotenv==1.0.0
