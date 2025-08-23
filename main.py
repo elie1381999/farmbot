@@ -433,4 +433,7 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
-
+# ... (assuming the rest of main.py includes the phone validation function; apply the fix here)
+# Example fix for the phone validation line (replace the original):
+if not re.match("^\\+?[0-9\\s\\-\\(\\)]{8,20}$", phone):
+    # ... (rest of the code)
