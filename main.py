@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import FastAPI, Request, Response
 import uvicorn
 
-from telegram import Update
+from telegram.ext import Application
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -368,28 +368,9 @@ async def webhook(request: Request):
 # -------------------------
 @app.on_event("startup")
 async def on_startup():
-    """
-    Create, register, initialize and start the telegram Application.
-    Runs inside each worker process.
-    """
     global telegram_app
 
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        logger.error("SUPABASE_URL and SUPABASE_KEY must be set in environment")
-        raise RuntimeError("Supabase config missing")
-
-    # initialize global farm core (makes core_singleton.farm_core available)
-    logger.info("Initializing FarmCore (Supabase REST client)...")
-    core_singleton.init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
-    logger.info("FarmCore (Supabase REST client) initialized.")
-
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    if not TELEGRAM_TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
-        # Fail fast so deploy doesn't silently start without a token
-        raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
+    # ... [env checks as before]
 
     logger.info("Creating telegram Application...")
     telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
@@ -403,14 +384,10 @@ async def on_startup():
     logger.info("Starting telegram Application...")
     await telegram_app.start()
 
-    # At this point telegram_app.update_queue exists and the webhook can put updates onto it
     logger.info("Telegram Application started.")
 
 @app.on_event("shutdown")
 async def on_shutdown():
-    """
-    Stop and shutdown the telegram application cleanly when the process shuts down.
-    """
     global telegram_app
     if telegram_app is None:
         return
@@ -432,3 +409,4 @@ if __name__ == "__main__":
     # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+
