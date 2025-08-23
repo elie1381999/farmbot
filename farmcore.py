@@ -5,19 +5,29 @@ from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load .env for local development if present (safe)
 load_dotenv()
 
 class FarmCore:
-    def __init__(self):
-        supabase_url = os.getenv("SUPABASE_URL")
-        supabase_key = os.getenv("SUPABASE_KEY")
+    def __init__(self, supabase_url: str | None = None, supabase_key: str | None = None):
+        """
+        Create a FarmCore instance with an active Supabase client.
+        Pass supabase_url and supabase_key from main.py startup to avoid
+        creating the client at import time.
+        """
+        if supabase_url is None:
+            supabase_url = os.getenv("SUPABASE_URL")
+        if supabase_key is None:
+            supabase_key = os.getenv("SUPABASE_KEY")
+
         if not supabase_url or not supabase_key:
-            raise ValueError(
-                "Supabase URL and Key must be set in environment variables"
-            )
+            raise RuntimeError("SUPABASE_URL and SUPABASE_KEY are required to initialize FarmCore")
+
+        # create_client may raise if versions mismatch — that's expected to happen
+        # here during startup (not at import time).
         self.supabase: Client = create_client(supabase_url, supabase_key)
 
+    # --- your existing methods below remain the same ---
     def get_farmer(self, telegram_id: int) -> Optional[Dict[str, Any]]:
         try:
             response = (
@@ -74,7 +84,6 @@ class FarmCore:
     def update_crop(self, crop_id: str, **updates) -> Optional[Dict[str, Any]]:
         if not updates:
             return None
-        # convert dates to isoformat if date objects passed
         if "planting_date" in updates and isinstance(updates["planting_date"], (date,)):
             updates["planting_date"] = updates["planting_date"].isoformat()
         response = (
@@ -92,10 +101,8 @@ class FarmCore:
             .eq("id", crop_id)
             .execute()
         )
-        # supabase returns deleted rows in response.data typically
         return bool(response.data)
 
-    # Existing methods below -- unchanged
     def record_harvest(
         self,
         crop_id: str,
@@ -239,17 +246,15 @@ class FarmCore:
         start_date = date.today() - timedelta(days=7)
         end_date = date.today()
 
-        # Get harvests with crop information
         harvests_response = (
             self.supabase.table("harvests")
-            .select("*, crops!inner(*)")  # Get all crop fields, not just farmer_id
+            .select("*, crops!inner(*)")
             .eq("crops.farmer_id", farmer_id)
             .gte("harvest_date", start_date.isoformat())
             .lte("harvest_date", end_date.isoformat())
             .execute()
         )
 
-        # Get expenses
         expenses_response = (
             self.supabase.table("expenses")
             .select("*")
@@ -259,14 +264,11 @@ class FarmCore:
             .execute()
         )
 
-        # Get pending payments
         pending_payments = self.get_pending_payments(farmer_id)
 
-        # Ensure we have lists even if response.data is None
         harvests_data = harvests_response.data if harvests_response.data else []
         expenses_data = expenses_response.data if expenses_response.data else []
 
-        # Calculate totals
         total_harvest = sum(h.get("quantity", 0) for h in harvests_data)
         total_expenses = sum(e.get("amount", 0) for e in expenses_data)
         total_pending = sum(p.get("expected_amount", 0) for p in pending_payments)
@@ -935,3 +937,4 @@ class FarmCore:
         response = self.supabase.table("market_prices").insert(price_data).execute()
         return response.data[0] if response.data else None
 """
+
