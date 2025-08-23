@@ -1,6 +1,5 @@
-fastapi
-uvicorn[standard]
 python-telegram-bot==20.8
 httpx==0.26.0
 supabase==2.18.1
 python-dotenv==1.0.0
+
