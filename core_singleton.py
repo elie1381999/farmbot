@@ -1,34 +1,16 @@
 # core_singleton.py
-from typing import Optional
-from threading import Lock
+"""
+Singleton holder for FarmCore. The module exposes:
+- farm_core: set to None initially, will hold FarmCore instance after init_farm_core()
+- init_farm_core(supabase_url, supabase_key): initialize farm_core once
+"""
 
+from typing import Optional
 from farmcore import FarmCore
 
-class _FarmCoreProxy:
-    """
-    Lazy-initialized FarmCore proxy. Safe to import at module import time.
-    Call init_farm_core(supabase_url, supabase_key) during FastAPI startup.
-    """
-    def __init__(self):
-        self._inst: Optional[FarmCore] = None
-        self._lock = Lock()
+farm_core: Optional[FarmCore] = None
 
-    def init(self, supabase_url: str, supabase_key: str):
-        if self._inst is None:
-            with self._lock:
-                if self._inst is None:
-                    self._inst = FarmCore(supabase_url=supabase_url, supabase_key=supabase_key)
-
-    def is_initialized(self) -> bool:
-        return self._inst is not None
-
-    def __getattr__(self, name):
-        if self._inst is None:
-            raise RuntimeError("FarmCore not initialized. Call init_farm_core(...) during app startup.")
-        return getattr(self._inst, name)
-
-farm_core = _FarmCoreProxy()
-
-def init_farm_core(supabase_url: str, supabase_key: str):
-    """Called by main.py at FastAPI startup to initialize the real FarmCore."""
-    farm_core.init(supabase_url=supabase_url, supabase_key=supabase_key)
+def init_farm_core(supabase_url: str, supabase_key: str) -> None:
+    global farm_core
+    if farm_core is None:
+        farm_core = FarmCore(supabase_url=supabase_url, supabase_key=supabase_key)
