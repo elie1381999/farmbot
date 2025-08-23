@@ -361,6 +361,7 @@ async def webhook(request: Request):
 # Lifecycle: create/start/stop telegram_app per worker
 # -------------------------
 @app.on_event("startup")
+@app.on_event("startup")
 async def on_startup():
     """
     Create, register, initialize and start the telegram Application.
@@ -368,6 +369,18 @@ async def on_startup():
     """
     global telegram_app
 
+    # --- Initialize FarmCore (Supabase client) first ---
+    SUPABASE_URL = os.environ.get("SUPABASE_URL")
+    SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        logger.error("SUPABASE_URL or SUPABASE_KEY env var missing.")
+        raise RuntimeError("SUPABASE_URL and SUPABASE_KEY are required")
+
+    # Initialize the real FarmCore now (thread-safe)
+    init_farm_core(SUPABASE_URL, SUPABASE_KEY)
+    logger.info("FarmCore (Supabase client) initialized.")
+
+    # --- Now create/start Telegram application ---
     TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not TELEGRAM_TOKEN:
         logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
@@ -388,7 +401,6 @@ async def on_startup():
 
     # At this point telegram_app.update_queue exists and the webhook can put updates onto it
     logger.info("Telegram Application started.")
-
 @app.on_event("shutdown")
 async def on_shutdown():
     """
@@ -4443,6 +4455,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main() """
+
 
 
 
