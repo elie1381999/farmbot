@@ -1,4 +1,4 @@
-
+gunicorn==22.1.0
 python-telegram-bot==20.8
 httpx==0.26.0
 supabase==2.18.1
