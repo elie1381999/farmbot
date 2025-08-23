@@ -2,6 +2,8 @@
 import os
 import logging
 import asyncio
+from typing import Optional
+
 from fastapi import FastAPI, Request, Response
 import uvicorn
 
@@ -83,7 +85,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Helper command handlers (cancel/help/my_account/handle_message) -- kept exactly as in your original file
+# -------------------------
+# Helper command handlers
+# -------------------------
 async def cancel(update: Update, context) -> int:
     farmer = farm_core.get_farmer(update.effective_user.id)
     lang = farmer['language'] if farmer else 'ar'
@@ -156,7 +160,9 @@ async def handle_message(update: Update, context) -> None:
     else:
         await update.message.reply_text("أمر غير معروف. استخدم /help" if lang == 'ar' else "Unknown command. Use /help", reply_markup=get_main_keyboard(lang))
 
-# Build and register handlers into the provided Application instance
+# -------------------------
+# Handlers registration
+# -------------------------
 def register_handlers(application: Application):
     # Registration conversation handler
     reg_conv_handler = ConversationHandler(
@@ -303,20 +309,13 @@ def register_handlers(application: Application):
     application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_skip:"))
     application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_next:"))
 
-# Create FastAPI app and the telegram Application
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-if not TELEGRAM_TOKEN:
-    logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
-    raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
-
-# Build the Application (PTB)
-telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
-
-# Register handlers into telegram_app
-register_handlers(telegram_app)
-
-# FastAPI app
+# -------------------------
+# FastAPI app + Telegram Application (created on startup)
+# -------------------------
 app = FastAPI()
+
+# telegram_app will be created inside on_startup() so each worker/process gets its own instance
+telegram_app: Optional[Application] = None
 
 @app.get("/health")
 async def health():
@@ -328,13 +327,20 @@ async def webhook(request: Request):
     Receive Telegram update (JSON) and put it on the application's update queue
     so the registered handlers will process it.
     """
+    global telegram_app
+
+    if telegram_app is None:
+        # Not ready yet
+        logger.warning("Received webhook while telegram_app is not ready.")
+        return Response(status_code=503, content="Telegram app not ready")
+
     try:
         data = await request.json()
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to parse JSON from request")
         return Response(status_code=400, content="Invalid JSON")
 
-    # Convert to Update
+    # Convert to Update using telegram_app.bot
     try:
         update = Update.de_json(data, telegram_app.bot)
     except Exception:
@@ -351,31 +357,64 @@ async def webhook(request: Request):
 
     return {"ok": True}
 
-# Startup/shutdown handlers to initialize/start/stop Application properly
+# -------------------------
+# Lifecycle: create/start/stop telegram_app per worker
+# -------------------------
 @app.on_event("startup")
 async def on_startup():
-    logger.info("Starting telegram Application (initialize/start)...")
-    # initialize and start the application so handlers and job queues are ready
+    """
+    Create, register, initialize and start the telegram Application.
+    Runs inside each worker process.
+    """
+    global telegram_app
+
+    TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not TELEGRAM_TOKEN:
+        logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
+        # Fail fast so deploy doesn't silently start without a token
+        raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
+
+    logger.info("Creating telegram Application...")
+    telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
+
+    logger.info("Registering handlers into telegram Application...")
+    register_handlers(telegram_app)
+
+    logger.info("Initializing telegram Application...")
     await telegram_app.initialize()
+
+    logger.info("Starting telegram Application...")
     await telegram_app.start()
-    # the application will not poll because we push updates into update_queue via webhook
+
+    # At this point telegram_app.update_queue exists and the webhook can put updates onto it
     logger.info("Telegram Application started.")
 
 @app.on_event("shutdown")
 async def on_shutdown():
+    """
+    Stop and shutdown the telegram application cleanly when the process shuts down.
+    """
+    global telegram_app
+    if telegram_app is None:
+        return
+
     logger.info("Stopping telegram Application (stop/shutdown)...")
-    await telegram_app.stop()
-    await telegram_app.shutdown()
+    try:
+        await telegram_app.stop()
+        await telegram_app.shutdown()
+    except Exception:
+        logger.exception("Error while stopping/shutting down telegram application")
+    finally:
+        telegram_app = None
     logger.info("Telegram Application stopped.")
 
-# local dev entrypoint
+# -------------------------
+# Local dev entrypoint
+# -------------------------
 if __name__ == "__main__":
     # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
-
-
-
 
 
 
@@ -4404,4 +4443,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main() """
+
 
