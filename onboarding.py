@@ -86,3 +86,4 @@ async def get_village(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
             "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى." if lang == 'ar' else "Error creating account. Please try again."
         )
     return ConversationHandler.END
+
