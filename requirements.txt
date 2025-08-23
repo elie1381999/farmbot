@@ -3,5 +3,5 @@ uvicorn[standard]==0.24.0
 gunicorn==23.0.0
 python-telegram-bot==20.6
 httpx==0.25.2
-supabase==2.9.2
+supabase==2.4.0
 python-dotenv==1.0.0
