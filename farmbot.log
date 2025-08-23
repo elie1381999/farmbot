@@ -1,0 +1,501 @@
+2025-08-22 05:44:26,432 - __main__ - INFO - Starting FarmBot...
+2025-08-22 05:44:27,340 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getMe "HTTP/1.1 200 OK"
+2025-08-22 05:44:27,563 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/deleteWebhook "HTTP/1.1 200 OK"
+2025-08-22 05:44:27,568 - telegram.ext.Application - INFO - Application started
+2025-08-22 05:44:38,248 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:44:48,532 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:44:58,765 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:07,177 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:09,713 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:45:10,054 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:45:10,759 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:45:12,513 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:22,742 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:26,950 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:32,932 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:33,611 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:45:33,934 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:45:34,654 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:45:44,166 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:45,781 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:45:46,358 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:45:47,084 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:45:56,594 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:06,815 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:17,039 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:27,263 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:37,491 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:47,724 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:46:57,944 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:08,164 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:18,396 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:28,618 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:38,838 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:49,060 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:47:59,279 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:48:09,499 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:48:19,724 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:48:29,949 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:48:40,184 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:48:50,412 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:00,636 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:10,865 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:21,100 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:31,322 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:41,550 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:49:51,779 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:50:02,004 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:50:12,232 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:50:35,788 - __main__ - INFO - Starting FarmBot...
+2025-08-22 05:50:36,687 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getMe "HTTP/1.1 200 OK"
+2025-08-22 05:50:36,922 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/deleteWebhook "HTTP/1.1 200 OK"
+2025-08-22 05:50:36,925 - telegram.ext.Application - INFO - Application started
+2025-08-22 05:50:54,131 - __main__ - INFO - Starting FarmBot...
+2025-08-22 05:50:55,247 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getMe "HTTP/1.1 200 OK"
+2025-08-22 05:50:55,461 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/deleteWebhook "HTTP/1.1 200 OK"
+2025-08-22 05:50:55,464 - telegram.ext.Application - INFO - Application started
+2025-08-22 05:51:06,436 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:16,672 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:17,085 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:17,089 - __main__ - INFO - Handling message: ❓ المساعدة from user 6452605204
+2025-08-22 05:51:19,335 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:51:19,631 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:51:20,337 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:22,778 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:22,780 - __main__ - INFO - Handling message: 👤 حسابي from user 6452605204
+2025-08-22 05:51:23,091 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:51:23,326 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:51:23,566 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:25,554 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:25,555 - __main__ - INFO - Processing /start command for telegram_id 6452605204
+2025-08-22 05:51:25,556 - __main__ - INFO - Cleared conversation data for telegram_id 6452605204
+2025-08-22 05:51:26,114 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:51:26,116 - __main__ - INFO - Language set to ar for telegram_id 6452605204
+2025-08-22 05:51:26,117 - __main__ - INFO - No farmer found for telegram_id 6452605204, starting registration
+2025-08-22 05:51:26,351 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:35,649 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:36,363 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:44,959 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:45,646 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:51,335 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:52,092 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:51:58,366 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:51:59,096 - httpx - INFO - HTTP Request: POST https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers "HTTP/2 201 Created"
+2025-08-22 05:51:59,104 - __main__ - INFO - Farmer created successfully for telegram_id 6452605204: Elie
+2025-08-22 05:51:59,783 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:52:00,025 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:52:09,325 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:19,548 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:25,456 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:26,110 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:26,815 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:52:31,108 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:31,423 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:31,689 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:52:38,337 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:39,000 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:39,700 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/answerCallbackQuery "HTTP/1.1 200 OK"
+2025-08-22 05:52:39,704 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 673, in crop_planting_date
+    await update.message.reply_text(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'reply_text'
+2025-08-22 05:52:40,057 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:46,950 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:47,602 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:48,356 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/answerCallbackQuery "HTTP/1.1 200 OK"
+2025-08-22 05:52:48,358 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 673, in crop_planting_date
+    await update.message.reply_text(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'reply_text'
+2025-08-22 05:52:48,681 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:53,866 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:52:54,461 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:52:55,150 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:04,683 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:07,930 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:08,845 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:09,659 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:18,548 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:19,205 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:19,939 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:27,687 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:28,306 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:29,026 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:38,531 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:39,752 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:40,352 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:41,088 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:49,586 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:50,212 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:50,927 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:53:57,928 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:53:58,523 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:58,525 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:53:58,835 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:53:59,536 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:03,697 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:03,971 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:04,213 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:09,210 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:09,808 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:09,809 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:54:10,117 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:10,833 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:14,164 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:14,405 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:14,653 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:24,034 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:24,616 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:24,617 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:54:24,843 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:25,608 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:30,211 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:30,788 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:30,789 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:54:31,071 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:31,759 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:35,070 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:35,307 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:35,543 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:40,234 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:40,456 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:40,694 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:44,872 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:45,093 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:45,341 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:54:54,156 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:54:54,778 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:54,781 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:54:55,048 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:54:55,757 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:00,474 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:01,034 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:55:01,743 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:09,264 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:09,867 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:55:09,869 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\conversationhandler.py", line 842, in handle_update
+    new_state: object = await handler.handle_update(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        update, application, handler_check_result, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 703, in crop_area
+    crop = farm_core.add_crop(
+        farmer_id=farmer["id"],
+    ...<2 lines>...
+        area=area,
+    )
+TypeError: FarmCore.add_crop() got an unexpected keyword argument 'area'
+2025-08-22 05:55:10,284 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:55:10,964 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:19,197 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:19,198 - __main__ - INFO - Processing /start command for telegram_id 5120330125
+2025-08-22 05:55:19,199 - __main__ - INFO - Cleared conversation data for telegram_id 5120330125
+2025-08-22 05:55:19,800 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:55:19,801 - __main__ - INFO - Language set to ar for telegram_id 5120330125
+2025-08-22 05:55:19,802 - __main__ - INFO - No farmer found for telegram_id 5120330125, starting registration
+2025-08-22 05:55:20,510 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:21,421 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:21,665 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:26,258 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:26,502 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:32,535 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:33,246 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:34,904 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:35,507 - httpx - INFO - HTTP Request: POST https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers "HTTP/2 201 Created"
+2025-08-22 05:55:35,514 - __main__ - INFO - Farmer created successfully for telegram_id 5120330125: Elie bousleiman
+2025-08-22 05:55:35,777 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:36,033 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:41,436 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:41,441 - __main__ - INFO - Handling message: 👤 My Account from user 5120330125
+2025-08-22 05:55:42,099 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:42,372 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:42,374 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2396, in handle_message
+    await my_account(update, context)
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2207, in my_account
+    stats = farm_core.get_farm_statistics(farmer["id"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FarmCore' object has no attribute 'get_farm_statistics'
+2025-08-22 05:55:42,696 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:43,428 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:45,548 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:45,551 - __main__ - INFO - Handling message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:55:45,756 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:45,758 - __main__ - WARNING - Unrecognized message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:55:46,020 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:49,431 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:49,436 - __main__ - INFO - Handling message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:55:49,728 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:49,729 - __main__ - WARNING - Unrecognized message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:55:50,049 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:50,923 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:50,925 - __main__ - INFO - Handling message: 📊 Statistics from user 5120330125
+2025-08-22 05:55:51,172 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:55:51,902 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:55:51,904 - __main__ - INFO - Handling message: 🌾 My Crops from user 5120330125
+2025-08-22 05:55:52,128 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:52,355 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:55:52,681 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/crops?select=%2A&farmer_id=eq.07c9617b-7eee-46bb-9a77-f3dea20c4380 "HTTP/2 200 OK"
+2025-08-22 05:55:52,932 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:00,438 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:00,440 - __main__ - INFO - Handling message: 📈 Market Prices from user 5120330125
+2025-08-22 05:56:01,014 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:01,288 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:01,511 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/market_prices?select=%2A&order=price_date.desc&limit=10 "HTTP/2 200 OK"
+2025-08-22 05:56:02,197 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:05,099 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:05,101 - __main__ - INFO - Handling message: ❓ Help from user 5120330125
+2025-08-22 05:56:05,374 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:05,585 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:05,833 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:15,813 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:19,710 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:19,715 - __main__ - INFO - Handling message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:56:20,308 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:20,310 - __main__ - WARNING - Unrecognized message: 🌱 Add Crop from user 5120330125
+2025-08-22 05:56:21,005 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:30,547 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:34,090 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:34,092 - __main__ - INFO - Handling message: 👤 My Account from user 5120330125
+2025-08-22 05:56:34,619 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:34,893 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:34,896 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2396, in handle_message
+    await my_account(update, context)
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2207, in my_account
+    stats = farm_core.get_farm_statistics(farmer["id"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FarmCore' object has no attribute 'get_farm_statistics'
+2025-08-22 05:56:35,178 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:35,876 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:45,319 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:56:45,324 - __main__ - INFO - Processing /start command for telegram_id 5120330125
+2025-08-22 05:56:45,324 - __main__ - INFO - Cleared conversation data for telegram_id 5120330125
+2025-08-22 05:56:45,995 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.5120330125 "HTTP/2 200 OK"
+2025-08-22 05:56:45,997 - __main__ - INFO - Language set to en for telegram_id 5120330125
+2025-08-22 05:56:45,998 - __main__ - INFO - Farmer found: Elie bousleiman (ID: 07c9617b-7eee-46bb-9a77-f3dea20c4380)
+2025-08-22 05:56:46,749 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:56:47,054 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/treatments?select=%2A%2Ccrops%21inner%28%2A%29&crops.farmer_id=eq.07c9617b-7eee-46bb-9a77-f3dea20c4380&next_due_date=gte.2025-08-22&next_due_date=lte.2025-08-29 "HTTP/2 200 OK"
+2025-08-22 05:56:47,340 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/payments?select=%2A%2Cdeliveries%21inner%28harvests%21inner%28crops%21inner%28farmer_id%29%29%29&deliveries.harvests.crops.farmer_id=eq.07c9617b-7eee-46bb-9a77-f3dea20c4380&status=eq.pending "HTTP/2 200 OK"
+2025-08-22 05:56:56,221 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:06,444 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:14,466 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:14,470 - __main__ - INFO - Processing /start command for telegram_id 6452605204
+2025-08-22 05:57:14,471 - __main__ - INFO - Clearing existing session for telegram_id 6452605204
+2025-08-22 05:57:14,472 - __main__ - INFO - Cleared conversation data for telegram_id 6452605204
+2025-08-22 05:57:15,072 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:57:15,075 - __main__ - INFO - Language set to ar for telegram_id 6452605204
+2025-08-22 05:57:15,076 - __main__ - INFO - Farmer found: Elie (ID: 17092618-c7bd-4bad-9b3d-cdf46f13db3e)
+2025-08-22 05:57:15,826 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:16,037 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/treatments?select=%2A%2Ccrops%21inner%28%2A%29&crops.farmer_id=eq.17092618-c7bd-4bad-9b3d-cdf46f13db3e&next_due_date=gte.2025-08-22&next_due_date=lte.2025-08-29 "HTTP/2 200 OK"
+2025-08-22 05:57:16,258 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/payments?select=%2A%2Cdeliveries%21inner%28harvests%21inner%28crops%21inner%28farmer_id%29%29%29&deliveries.harvests.crops.farmer_id=eq.17092618-c7bd-4bad-9b3d-cdf46f13db3e&status=eq.pending "HTTP/2 200 OK"
+2025-08-22 05:57:20,302 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:20,598 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.6452605204 "HTTP/2 200 OK"
+2025-08-22 05:57:20,882 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:30,832 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:32,528 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:32,533 - __main__ - INFO - Processing /start command for telegram_id 7254760034
+2025-08-22 05:57:32,533 - __main__ - INFO - Cleared conversation data for telegram_id 7254760034
+2025-08-22 05:57:33,131 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.7254760034 "HTTP/2 406 Not Acceptable"
+2025-08-22 05:57:33,133 - __main__ - INFO - Language set to ar for telegram_id 7254760034
+2025-08-22 05:57:33,134 - __main__ - INFO - No farmer found for telegram_id 7254760034, starting registration
+2025-08-22 05:57:33,844 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:37,708 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:37,948 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:40,310 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:40,558 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:50,536 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:50,755 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:51,480 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:53,210 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:53,802 - httpx - INFO - HTTP Request: POST https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers "HTTP/2 201 Created"
+2025-08-22 05:57:53,803 - __main__ - INFO - Farmer created successfully for telegram_id 7254760034: Elie
+2025-08-22 05:57:54,046 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:54,304 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:57:57,994 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:57:57,996 - __main__ - INFO - Handling message: 🌱 Add Crop from user 7254760034
+2025-08-22 05:57:58,261 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.7254760034 "HTTP/2 200 OK"
+2025-08-22 05:57:58,262 - __main__ - WARNING - Unrecognized message: 🌱 Add Crop from user 7254760034
+2025-08-22 05:57:58,501 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:58:00,295 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:58:00,297 - __main__ - INFO - Handling message: 👤 My Account from user 7254760034
+2025-08-22 05:58:00,563 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.7254760034 "HTTP/2 200 OK"
+2025-08-22 05:58:00,830 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.7254760034 "HTTP/2 200 OK"
+2025-08-22 05:58:00,833 - __main__ - ERROR - Exception while handling an update:
+Traceback (most recent call last):
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_application.py", line 1311, in process_update
+    await coroutine
+  File "C:\Users\Elie Abou Sleiman\AppData\Local\Programs\Python\Python313\Lib\site-packages\telegram\ext\_handlers\basehandler.py", line 158, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2396, in handle_message
+    await my_account(update, context)
+  File "C:\Users\Elie Abou Sleiman\Desktop\abulel\farmbot\main.py", line 2207, in my_account
+    stats = farm_core.get_farm_statistics(farmer["id"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FarmCore' object has no attribute 'get_farm_statistics'
+2025-08-22 05:58:01,115 - httpx - INFO - HTTP Request: GET https://jlvpdjpdnssgjapzkfxh.supabase.co/rest/v1/farmers?select=%2A&telegram_id=eq.7254760034 "HTTP/2 200 OK"
+2025-08-22 05:58:01,359 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/sendMessage "HTTP/1.1 200 OK"
+2025-08-22 05:58:11,345 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:58:21,593 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:58:31,851 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:58:42,451 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:58:52,668 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:02,942 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:13,172 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:23,389 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:33,612 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:43,832 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 05:59:54,048 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 06:00:04,269 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 06:00:14,504 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
+2025-08-22 06:00:24,756 - httpx - INFO - HTTP Request: POST https://api.telegram.org/bot8363599408:AAH8W465F6d1o701yjySi99n4VoThHww_VE/getUpdates "HTTP/1.1 200 OK"
