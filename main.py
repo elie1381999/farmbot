@@ -18,7 +18,7 @@ from telegram.ext import (
 )
 
 # your existing modules (must be in the same package/repo)
-from core_singleton import farm_core
+from core_singleton import farm_core, init_farm_core
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 
@@ -4443,5 +4443,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main() """
+
 
 
