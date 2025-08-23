@@ -1,4 +1,3 @@
-# core_singleton.py
 """
 Singleton holder for FarmCore. The module exposes:
 - farm_core: set to None initially, will hold FarmCore instance after init_farm_core()
