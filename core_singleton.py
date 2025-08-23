@@ -2,14 +2,12 @@
 from typing import Optional
 from threading import Lock
 
-# import FarmCore lazily (module present in your repo)
 from farmcore import FarmCore
 
 class _FarmCoreProxy:
     """
-    A thread-safe lazy-initialized proxy for FarmCore.
-    Importing this module is safe (no network activity).
-    Call init_farm_core(...) during FastAPI startup to initialize.
+    Lazy-initialized FarmCore proxy. Safe to import at module import time.
+    Call init_farm_core(supabase_url, supabase_key) during FastAPI startup.
     """
     def __init__(self):
         self._inst: Optional[FarmCore] = None
@@ -29,9 +27,8 @@ class _FarmCoreProxy:
             raise RuntimeError("FarmCore not initialized. Call init_farm_core(...) during app startup.")
         return getattr(self._inst, name)
 
-# exported singleton-like proxy
 farm_core = _FarmCoreProxy()
 
 def init_farm_core(supabase_url: str, supabase_key: str):
-    """Helper used by main.py to initialize farm_core during startup."""
+    """Called by main.py at FastAPI startup to initialize the real FarmCore."""
     farm_core.init(supabase_url=supabase_url, supabase_key=supabase_key)
