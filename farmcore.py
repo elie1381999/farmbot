@@ -1,4 +1,3 @@
-# farmcore.py
 import os
 from supabase import create_client, Client
 from datetime import datetime, date, timedelta
@@ -16,7 +15,7 @@ class FarmCore:
             raise ValueError(
                 "Supabase URL and Key must be set in environment variables or passed to FarmCore()"
             )
-        # create_client returns a sync client from supabase library
+        # Initialize Supabase client with updated method
         self.supabase: Client = create_client(supabase_url, supabase_key)
 
     def get_farmer(self, telegram_id: int) -> Optional[Dict[str, Any]]:
@@ -302,7 +301,6 @@ class FarmCore:
         }
         response = self.supabase.table("market_prices").insert(price_data).execute()
         return response.data[0] if response.data else None
-
 
 
 
@@ -928,6 +926,7 @@ class FarmCore:
         response = self.supabase.table("market_prices").insert(price_data).execute()
         return response.data[0] if response.data else None
 """
+
 
 
 
