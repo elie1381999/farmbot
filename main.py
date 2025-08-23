@@ -373,6 +373,11 @@ async def on_startup():
 
     # ... [env checks as before]
 
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    if not TELEGRAM_TOKEN:
+        logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
+        raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
+
     logger.info("Creating telegram Application...")
     telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
 
@@ -410,5 +415,6 @@ if __name__ == "__main__":
     # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+
 
 
