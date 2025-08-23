@@ -1,25 +1,18 @@
+import os
 from fastapi import FastAPI, Request
 from telegram import Update
 from telegram.ext import Application
 
 app = FastAPI()
 
-# your telegram_app init (as you already have)
+# Load token from environment
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+if not TELEGRAM_TOKEN:
+    raise RuntimeError("TELEGRAM_TOKEN is not set in environment variables!")
+
+# Initialize telegram app
 telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
-
-@app.post("/webhook")
-async def telegram_webhook(request: Request):
-    data = await request.json()
-    update = Update.de_json(data, telegram_app.bot)
-    await telegram_app.process_update(update)
-    return {"ok": True}
-
-@app.get("/")
-async def root():
-    return {"message": "✅ AGRIVET Bot API is running"}
-
-
-
 
 
 
@@ -466,3 +459,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 '''
+
