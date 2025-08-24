@@ -2,7 +2,7 @@
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from datetime import datetime, date, timedelta
-from core_singleton import farm_core
+from core_singleton import get_farm_core
 from keyboards import get_main_keyboard
 
 # Conversation states
@@ -61,11 +61,12 @@ async def add_crop_start_callback(update: Update, context: ContextTypes.DEFAULT_
     """Starts add-crop flow (entry from inline button)."""
     query = update.callback_query
     await query.answer()
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(update.effective_user.id)
     if not farmer:
         await query.message.reply_text("Create an account first. Use /start")
         return -1
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     await query.message.reply_text(
         ("بدء إضافة محصول جديد — اكتب اسم المحصول أدناه." if lang == 'ar'
          else "Starting new crop — type the crop name below."),
@@ -80,10 +81,11 @@ async def add_crop_start_callback(update: Update, context: ContextTypes.DEFAULT_
     return CROP_STATES['CROP_NAME']
 
 async def add_crop_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    name = update.message.text.strip()
+    farm_core = get_farm_core()
+    name = (update.message.text or "").strip()
     context.user_data['crop_name'] = name
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     date_kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("اليوم" if lang == 'ar' else "Today", callback_data="date:today"),
          InlineKeyboardButton("أمس" if lang == 'ar' else "Yesterday", callback_data="date:yesterday")],
@@ -94,10 +96,11 @@ async def add_crop_name_handler(update: Update, context: ContextTypes.DEFAULT_TY
     return CROP_STATES['CROP_PLANTING_DATE']
 
 async def add_crop_date_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     # handles typed date or receives callback via crops_callback_handler for prefcrop/date
     text = update.message.text if update.message else ""
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     try:
         planting_date = _parse_date_input(text)
     except Exception:
@@ -110,9 +113,10 @@ async def add_crop_date_handler(update: Update, context: ContextTypes.DEFAULT_TY
     return CROP_STATES['CROP_NOTES']
 
 async def add_crop_notes_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    text = update.message.text
+    farm_core = get_farm_core()
+    text = update.message.text or ""
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     notes = None if text.lower() in ['تخطي', 'skip'] else text.strip()
     crop = farm_core.add_crop(
         farmer_id=farmer['id'],
@@ -129,10 +133,11 @@ async def add_crop_notes_handler(update: Update, context: ContextTypes.DEFAULT_T
     return -1  # ConversationHandler.END (used by main) — returning -1 is safe; main registered fallbacks handle ending
 
 async def addcrop_skip_notes_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     query = update.callback_query
     await query.answer()
     farmer = farm_core.get_farmer(query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     notes = None
     crop = farm_core.add_crop(
         farmer_id=farmer['id'],
@@ -152,12 +157,13 @@ async def addcrop_skip_notes_callback(update: Update, context: ContextTypes.DEFA
 # My Crops view: list + inline per-crop manage + pagination + Add inline
 # ----------------------
 async def _send_crops_page(update_or_query, context, page: int):
+    farm_core = get_farm_core()
     crops = context.user_data.get('crops_list', [])
     if hasattr(update_or_query, "effective_user"):
         farmer = farm_core.get_farmer(update_or_query.effective_user.id)
     else:
         farmer = farm_core.get_farmer(context.user_data.get('caller_id') or 0)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
 
     total = len(crops)
     start = page * CROPS_PER_PAGE
@@ -197,11 +203,12 @@ async def _send_crops_page(update_or_query, context, page: int):
             await context.bot.send_message(chat_id=to_id, text=text, reply_markup=markup)
 
 async def my_crops(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(update.effective_user.id)
     if not farmer:
         await update.message.reply_text("Create an account first. Use /start")
         return
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     crops = farm_core.get_farmer_crops(farmer['id'])
     if not crops:
         await update.message.reply_text("ليس لديك محاصيل." if lang == 'ar' else "No crops found.", reply_markup=get_main_keyboard(lang))
@@ -211,6 +218,7 @@ async def my_crops(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # callback for navigation (pages) and pref crop sugg. Also handle "crop_add" start here to keep UX simple
 async def crops_callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -229,7 +237,7 @@ async def crops_callback_handler(update: Update, context: ContextTypes.DEFAULT_T
         _, name = data.split(":", 1)
         context.user_data['crop_name'] = name
         farmer = farm_core.get_farmer(update.effective_user.id)
-        lang = farmer['language'] if farmer else 'ar'
+        lang = farmer.get('language', 'ar') if farmer else 'ar'
         date_kb = InlineKeyboardMarkup([
             [InlineKeyboardButton("اليوم" if lang == 'ar' else "Today", callback_data="date:today"),
              InlineKeyboardButton("أمس" if lang == 'ar' else "Yesterday", callback_data="date:yesterday")],
@@ -240,13 +248,16 @@ async def crops_callback_handler(update: Update, context: ContextTypes.DEFAULT_T
         return
 
     if data == "crop_add":
-        await query.message.reply_text("Opening Add Crop form..." if farm_core.get_farmer(update.effective_user.id)['language']=='ar' else "Opening Add Crop form...")
+        farmer = farm_core.get_farmer(update.effective_user.id)
+        lang = farmer.get('language', 'ar') if farmer else 'ar'
+        await query.message.reply_text("Opening Add Crop form..." if lang=='ar' else "Opening Add Crop form...")
         return
 
 # ----------------------
 # Manage / Edit / Delete callbacks
 # ----------------------
 async def crop_manage_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -264,7 +275,7 @@ async def crop_manage_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     if not crop:
         await query.message.reply_text("Crop not found.")
         return
-    lang = farm_core.get_farmer(update.effective_user.id)['language']
+    lang = farm_core.get_farmer(update.effective_user.id).get('language', 'ar')
     text = f"🔎 {crop.get('name')}\n\n• planted: {crop.get('planting_date')}\n• notes: {crop.get('notes') or '—'}\n"
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("✏️ تعديل" if lang == 'ar' else "✏️ Edit", callback_data=f"crop_edit:{crop_id}"),
@@ -274,6 +285,7 @@ async def crop_manage_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     await query.message.edit_text(text, reply_markup=kb)
 
 async def crop_delete_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -282,7 +294,7 @@ async def crop_delete_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     except Exception:
         await query.message.reply_text("Invalid selection.")
         return
-    lang = farm_core.get_farmer(update.effective_user.id)['language']
+    lang = farm_core.get_farmer(update.effective_user.id).get('language', 'ar')
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("نعم، احذف" if lang == 'ar' else "Yes, delete", callback_data=f"confirm_delete:{crop_id}"),
          InlineKeyboardButton("إلغاء" if lang == 'ar' else "Cancel", callback_data="crop_page:0")]
@@ -290,6 +302,7 @@ async def crop_delete_callback(update: Update, context: ContextTypes.DEFAULT_TYP
     await query.message.edit_text("هل أنت متأكد؟ حذف المحصول سيحذف بياناته." if lang == 'ar' else "Are you sure? Deleting a crop will remove its data.", reply_markup=kb)
 
 async def confirm_delete_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -299,7 +312,7 @@ async def confirm_delete_callback(update: Update, context: ContextTypes.DEFAULT_
         await query.message.reply_text("Invalid selection.")
         return
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     success = farm_core.delete_crop(crop_id)
     if success:
         context.user_data.pop('crops_list', None)
@@ -313,6 +326,7 @@ async def confirm_delete_callback(update: Update, context: ContextTypes.DEFAULT_
 # Edit flow (starts from callback crop_edit:<id>)
 # ----------------------
 async def crop_edit_entry_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -323,7 +337,7 @@ async def crop_edit_entry_callback(update: Update, context: ContextTypes.DEFAULT
         return -1
     context.user_data['edit_crop_id'] = crop_id
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("الاسم" if lang == 'ar' else "Name", callback_data="edit_field:name"),
          InlineKeyboardButton("تاريخ الزراعة" if lang == 'ar' else "Planting Date", callback_data="edit_field:date")],
@@ -334,6 +348,7 @@ async def crop_edit_entry_callback(update: Update, context: ContextTypes.DEFAULT
     return EDIT_STATES['CHOOSE_FIELD']
 
 async def edit_field_choice_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    farm_core = get_farm_core()
     query = update.callback_query
     data = query.data or ""
     await query.answer()
@@ -341,7 +356,7 @@ async def edit_field_choice_callback(update: Update, context: ContextTypes.DEFAU
         await query.message.reply_text("Invalid selection.")
         return -1
     field = data.split(":", 1)[1]
-    lang = farm_core.get_farmer(update.effective_user.id)['language']
+    lang = farm_core.get_farmer(update.effective_user.id).get('language', 'ar')
     if field == "name":
         await query.message.edit_text("أدخل الاسم الجديد:" if lang == 'ar' else "Enter new name:")
         return EDIT_STATES['EDIT_NAME']
@@ -355,10 +370,11 @@ async def edit_field_choice_callback(update: Update, context: ContextTypes.DEFAU
     return -1
 
 async def edit_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    new_name = update.message.text.strip()
+    farm_core = get_farm_core()
+    new_name = (update.message.text or "").strip()
     crop_id = context.user_data.get('edit_crop_id')
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     crops = farm_core.get_farmer_crops(farmer['id'])
     if any(c['name'].strip().lower() == new_name.lower() and str(c['id']) != str(crop_id) for c in crops):
         await update.message.reply_text("يوجد محصول بنفس الاسم. اختر اسمًا مختلفًا." if lang == 'ar' else "A crop with that name already exists. Pick a different name.")
@@ -372,10 +388,11 @@ async def edit_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return -1
 
 async def edit_date_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.strip()
+    farm_core = get_farm_core()
+    text = (update.message.text or "").strip()
     crop_id = context.user_data.get('edit_crop_id')
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     try:
         new_date = datetime.strptime(text, "%Y-%m-%d").date()
     except ValueError:
@@ -390,10 +407,11 @@ async def edit_date_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return -1
 
 async def edit_notes_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
+    farm_core = get_farm_core()
+    text = update.message.text or ""
     crop_id = context.user_data.get('edit_crop_id')
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     if text.lower() in ['تخطي', 'skip']:
         notes = None
     else:
@@ -411,6 +429,7 @@ async def edit_notes_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 # ----------------------
 async def record_harvest(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Entry: show inline list of crops (buttons inside the conversation)."""
+    farm_core = get_farm_core()
     # handle whether called from message or callback_query
     if update.callback_query:
         query = update.callback_query
@@ -425,7 +444,7 @@ async def record_harvest(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if not farmer:
         await send_method("Create an account first. Use /start")
         return -1
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     crops = farm_core.get_farmer_crops(farmer['id'])
     if not crops:
         await send_method("ليس لديك محاصيل. أضف محصولًا أولاً." if lang == 'ar' else "No crops found. Add a crop first.")
@@ -439,6 +458,7 @@ async def record_harvest(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     return HARVEST_STATES['HARVEST_CROP']
 
 async def harvest_select_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     """User tapped a crop inline button."""
     query = update.callback_query
     await query.answer()
@@ -450,7 +470,7 @@ async def harvest_select_callback(update: Update, context: ContextTypes.DEFAULT_
         return -1
     context.user_data['crop_id'] = crop_id
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
 
     date_kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("اليوم" if lang == 'ar' else "Today", callback_data="harvest_date:today"),
@@ -461,12 +481,13 @@ async def harvest_select_callback(update: Update, context: ContextTypes.DEFAULT_
     return HARVEST_STATES['HARVEST_DATE']
 
 async def harvest_date_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     """Handle inline date choices (today/yesterday/pick)."""
     query = update.callback_query
     await query.answer()
     data = query.data or ""
-    farmer = farm_core.get_farmer(update.callback_query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    farmer = farm_core.get_farmer(query.from_user.id)
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
 
     if data == "harvest_date:pick":
         await query.message.reply_text("أدخل التاريخ (YYYY-MM-DD أو DD/MM/YYYY)" if lang == 'ar' else "Enter date (YYYY-MM-DD or DD/MM/YYYY)")
@@ -487,9 +508,10 @@ async def harvest_date_callback(update: Update, context: ContextTypes.DEFAULT_TY
     return HARVEST_STATES['HARVEST_DATE']
 
 async def harvest_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    text = update.message.text
+    farm_core = get_farm_core()
+    text = update.message.text or ""
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     try:
         harvest_date = _parse_date_input(text)
     except ValueError:
@@ -501,8 +523,9 @@ async def harvest_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     return HARVEST_STATES['HARVEST_QUANTITY']
 
 async def harvest_quantity(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     try:
         quantity = float(update.message.text)
         context.user_data['harvest_quantity'] = quantity
@@ -517,11 +540,12 @@ async def harvest_quantity(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return HARVEST_STATES['HARVEST_QUANTITY']
 
 async def harvest_delivery_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     query = update.callback_query
     await query.answer()
     data = query.data or ""
-    farmer = farm_core.get_farmer(update.callback_query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    farmer = farm_core.get_farmer(query.from_user.id)
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
 
     status = "delivered" if data.endswith(":delivered") else "stored"
     harvest = farm_core.record_harvest(
@@ -534,22 +558,23 @@ async def harvest_delivery_callback(update: Update, context: ContextTypes.DEFAUL
     if not harvest:
         await query.message.reply_text("خطأ في تسجيل الحصاد." if lang == 'ar' else "Error recording harvest.")
         return -1
-    context.user_data['harvest_id'] = harvest['id']
+    context.user_data['harvest_id'] = harvest.get('id')
 
     if status == "delivered":
         kb = InlineKeyboardMarkup([[InlineKeyboardButton("تخطي" if lang=='ar' else "Skip", callback_data="harvest_skip:collector")]])
         await query.message.reply_text("اسم الجامع؟ (اختياري)" if lang == 'ar' else "Collector's name? (optional)", reply_markup=kb)
         return HARVEST_STATES['DELIVERY_COLLECTOR']
     else:
-        await query.message.reply_text(f"تم تسجيل الحصاد بنجاح! ✅ {context.user_data['harvest_quantity']} kg" if lang == 'ar' else f"Harvest recorded! ✅ {context.user_data['harvest_quantity']} kg", reply_markup=get_main_keyboard(lang))
+        await query.message.reply_text(f"تم تسجيل الحصاد بنجاح! ✅ {context.user_data.get('harvest_quantity', 0)} kg" if lang == 'ar' else f"Harvest recorded! ✅ {context.user_data.get('harvest_quantity', 0)} kg", reply_markup=get_main_keyboard(lang))
         return -1
 
 async def harvest_skip_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     query = update.callback_query
     await query.answer()
     data = query.data or ""
-    farmer = farm_core.get_farmer(update.callback_query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    farmer = farm_core.get_farmer(query.from_user.id)
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     try:
         part = data.split(":", 1)[1]
     except Exception:
@@ -563,7 +588,7 @@ async def harvest_skip_callback(update: Update, context: ContextTypes.DEFAULT_TY
     if part == "market":
         market = None
         delivery = farm_core.record_delivery(
-            harvest_id=context.user_data['harvest_id'],
+            harvest_id=context.user_data.get('harvest_id'),
             delivery_date=date.today(),
             collector_name=context.user_data.get('collector_name'),
             market=market
@@ -575,21 +600,23 @@ async def harvest_skip_callback(update: Update, context: ContextTypes.DEFAULT_TY
         return -1
 
 async def harvest_delivery_collector(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    text = update.message.text
+    farm_core = get_farm_core()
+    text = update.message.text or ""
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     context.user_data['collector_name'] = None if text.lower() in ["تخطي", "skip"] else text
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("تخطي" if lang=='ar' else "Skip", callback_data="harvest_skip:market")]])
     await update.message.reply_text("إلى أي سوق؟ (اختياري)" if lang == 'ar' else "Which market? (optional)", reply_markup=kb)
     return HARVEST_STATES['DELIVERY_MARKET']
 
 async def harvest_delivery_market(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    text = update.message.text
+    farm_core = get_farm_core()
+    text = update.message.text or ""
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar') if farmer else 'ar'
     market = None if text.lower() in ["تخطي", "skip"] else text
     delivery = farm_core.record_delivery(
-        harvest_id=context.user_data['harvest_id'],
+        harvest_id=context.user_data.get('harvest_id'),
         delivery_date=date.today(),
         collector_name=context.user_data.get('collector_name'),
         market=market
@@ -599,5 +626,3 @@ async def harvest_delivery_market(update: Update, context: ContextTypes.DEFAULT_
     else:
         await update.message.reply_text("خطأ في تسجيل التسليم." if lang == 'ar' else "Error recording delivery.")
     return -1
-
-
