@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 import re
 from datetime import datetime, date, timedelta
 import logging
-from core_singleton import farm_core
+from main import farm_core  # Changed import
 from keyboards import get_main_keyboard
 
 # Logging
