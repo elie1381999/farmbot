@@ -2,11 +2,23 @@ import os
 from supabase import create_client, Client
 from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional
+import logging
+
+# Logging
+logger = logging.getLogger(__name__)
 
 # Only load dotenv for local development
 if os.getenv("RENDER") != "true":
     from dotenv import load_dotenv
     load_dotenv()
+
+# Singleton FarmCore instance
+farm_core: Optional['FarmCore'] = None
+
+def init_farm_core(supabase_url: str, supabase_key: str) -> None:
+    global farm_core
+    if farm_core is None:
+        farm_core = FarmCore(supabase_url=supabase_url, supabase_key=supabase_key)
 
 class FarmCore:
     def __init__(self, supabase_url: str = None, supabase_key: str = None):
@@ -304,7 +316,6 @@ class FarmCore:
 
             harvests_data = harvests_response.data if harvests_response.data else []
             expenses_data = expenses_response.data if expenses_response.data else []
-            # Handle missing expected_amount (assuming it's not in the schema)
             total_harvest = sum(h.get("quantity", 0) for h in harvests_data)
             total_expenses = sum(e.get("amount", 0) for e in expenses_data)
             total_pending = 0  # Placeholder: adjust based on actual schema
