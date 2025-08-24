@@ -18,7 +18,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from farmcore import farm_core, init_farm_core  # Import from farmcore.py
+import farmcore
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 from aboutcrop import (
@@ -411,10 +411,10 @@ async def on_startup():
 
     logger.info("Initializing FarmCore...")
     try:
-        init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
-        if farm_core is None:
-            logger.error("FarmCore initialization failed: farm_core is None")
-            raise RuntimeError("Failed to initialize FarmCore")
+       farmcore.init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
+    if farmcore.farm_core is None:
+          logger.error("FarmCore initialization failed: farmcore.farm_core is None")
+    raise RuntimeError("Failed to initialize FarmCore")
         logger.info("FarmCore initialized successfully.")
     except Exception as e:
         logger.error(f"Failed to initialize FarmCore: {str(e)}")
@@ -1434,5 +1434,6 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
 '''
+
 
 
