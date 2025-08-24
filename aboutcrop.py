@@ -2,7 +2,7 @@
 from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from datetime import datetime, date, timedelta
-from core_singleton import farm_core
+from farmcore import farm_core
 from keyboards import get_main_keyboard
 
 # Conversation states
@@ -1125,6 +1125,7 @@ async def harvest_delivery_market(update: Update, context: ContextTypes.DEFAULT_
         await update.message.reply_text("خطأ في تسجيل التسليم." if lang == 'ar' else "Error recording delivery.")
     return ConversationHandler.END
 '''
+
 
 
 
