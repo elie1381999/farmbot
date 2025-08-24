@@ -18,7 +18,6 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# import the lazy initializer and the global variable
 from core_singleton import farm_core, init_farm_core
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
@@ -401,30 +400,70 @@ async def webhook(request: Request):
 # -------------------------
 # Lifecycle: create/start/stop telegram_app
 # -------------------------
+@app.post("/")
+async def webhook(request: Request):
+    global telegram_app
+    if telegram_app is None:
+        logger.warning("Received webhook while telegram_app is not ready.")
+        return Response(status_code=503, content="Telegram app not ready")
+
+    try:
+        data = await request.json()
+    except Exception:
+        logger.exception("Failed to parse JSON from request")
+        return Response(status_code=400, content="Invalid JSON")
+
+    try:
+        update = Update.de_json(data, telegram_app.bot)
+    except Exception:
+        logger.exception("Failed to build Update from JSON")
+        return Response(status_code=400, content="Invalid update")
+
+    try:
+        await telegram_app.update_queue.put(update)
+    except Exception:
+        logger.exception("Failed to enqueue update")
+        return Response(status_code=500, content="Failed to process update")
+
+    return {"ok": True}
+
+# -------------------------
+# Lifecycle: create/start/stop telegram_app
+# -------------------------
 @app.on_event("startup")
 async def on_startup():
     global telegram_app
 
-    # Ensure Supabase env vars exist (FarmCore reads them in its constructor)
+    # Read env vars explicitly and log masked presence
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+
+    def mask(v: Optional[str]) -> str:
+        if not v:
+            return "<MISSING>"
+        return v[:4] + "..." + v[-4:]
+
+    logger.info(f"ENV check — SUPABASE_URL={bool(SUPABASE_URL)}, SUPABASE_KEY={bool(SUPABASE_KEY)}, TELEGRAM_TOKEN={bool(TELEGRAM_TOKEN)}, WEBHOOK_URL={bool(WEBHOOK_URL)}")
+
     if not SUPABASE_URL or not SUPABASE_KEY:
-        logger.error("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+        logger.error("Missing SUPABASE_URL or SUPABASE_KEY environment variables (needed by FarmCore)")
         raise RuntimeError("Supabase configuration missing")
 
     logger.info("Initializing FarmCore...")
     try:
-        # Lazily initialize the farm_core via core_singleton.init_farm_core()
-        init_farm_core()
-        if farm_core is None:
-            logger.error("FarmCore initialization failed: farm_core is None")
-            raise RuntimeError("Failed to initialize FarmCore")
-        logger.info("FarmCore initialized successfully.")
+        # pass env vars explicitly so farmcore knows what to use
+        init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
     except Exception as e:
-        logger.error(f"Failed to initialize FarmCore: {str(e)}")
-        raise
+        logger.exception("Failed to initialize FarmCore (see above).")
+        # re-raise so FastAPI startup fails fast and logs are visible
+        raise RuntimeError("Failed to initialize FarmCore") from e
 
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+    if farm_core is None:
+        logger.error("FarmCore initialization returned None unexpectedly")
+        raise RuntimeError("Failed to initialize FarmCore")
+
     if not TELEGRAM_TOKEN:
         logger.error("Missing TELEGRAM_TOKEN environment variable")
         raise RuntimeError("Telegram bot token is required")
@@ -433,7 +472,7 @@ async def on_startup():
     try:
         telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
     except Exception as e:
-        logger.error(f"Failed to create Telegram Application: {str(e)}")
+        logger.exception("Failed to create Telegram Application")
         raise
 
     logger.info("Registering handlers...")
@@ -442,7 +481,6 @@ async def on_startup():
     logger.info("Initializing Telegram Application...")
     await telegram_app.initialize()
 
-    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
     if not WEBHOOK_URL:
         logger.error("Missing WEBHOOK_URL environment variable")
         raise RuntimeError("Webhook URL is required")
@@ -452,10 +490,7 @@ async def on_startup():
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                response = await client.post(
-                    f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook",
-                    json={"url": WEBHOOK_URL}
-                )
+                response = await client.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook", json={"url": WEBHOOK_URL})
                 result = response.json()
                 if result.get("ok"):
                     logger.info("Telegram webhook set successfully")
@@ -465,9 +500,9 @@ async def on_startup():
                     if attempt == max_retries - 1:
                         raise RuntimeError("Failed to set Telegram webhook after retries")
             except Exception as e:
-                logger.error(f"Error setting Telegram webhook (attempt {attempt + 1}): {str(e)}")
+                logger.exception(f"Error setting Telegram webhook (attempt {attempt + 1})")
                 if attempt == max_retries - 1:
-                    raise RuntimeError(f"Webhook setup failed: {str(e)}")
+                    raise RuntimeError("Webhook setup failed") from e
             await asyncio.sleep(1)
 
     logger.info("Starting Telegram Application...")
