@@ -3,7 +3,7 @@ from venv import logger
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from datetime import datetime, date, timedelta
-from core_singleton import farm_core
+from farmcore import farm_core
 from keyboards import get_main_keyboard
 
 EXPENSE_STATES = {
@@ -542,4 +542,5 @@ async def weekly_summary(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             f"{'إجمالي المصاريف' if lang=='ar' else 'Total Expenses'}: {int(total_expenses)} LBP\n"
             f"{'المدفوعات المعلقة' if lang=='ar' else 'Pending Payments'}: {int(total_pending)} LBP"
         )
+
         await send(short, reply_markup=get_main_keyboard(lang))
