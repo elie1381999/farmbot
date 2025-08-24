@@ -1,10 +1,12 @@
 # aboutmoney.py
+# aboutmoney.py
 from venv import logger
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from datetime import datetime, date, timedelta
-import farmcore
+from core_singleton import farm_core
 from keyboards import get_main_keyboard
+
 
 EXPENSE_STATES = {
     'EXPENSE_CROP': 0,
@@ -544,5 +546,6 @@ async def weekly_summary(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
 
         await send(short, reply_markup=get_main_keyboard(lang))
+
 
 
