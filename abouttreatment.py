@@ -2,7 +2,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from datetime import datetime, date, timedelta
-from farmcore import farm_core
+from farmcore import farm_core, init_farm_core
 from keyboards import get_main_keyboard
 
 TREATMENT_STATES = {
@@ -250,4 +250,5 @@ async def treatment_next_date(update: Update, context: ContextTypes.DEFAULT_TYPE
     for k in ("crop_id", "product_name", "treatment_date", "treatment_cost"):
         context.user_data.pop(k, None)
     return ConversationHandler.END
+
 
