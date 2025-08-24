@@ -16,8 +16,6 @@ telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
 '''
 
 
-
-
 import os
 import logging
 import asyncio
@@ -326,7 +324,15 @@ def register_handlers(application: Application):
     application.add_handler(CallbackQueryHandler(harvest_select_callback, pattern=r"^harvest_select:"))
     application.add_handler(CallbackQueryHandler(harvest_date_callback, pattern=r"^harvest_date:"))
     application.add_handler(CallbackQueryHandler(harvest_delivery_callback, pattern=r"^harvest_delivery:"))
-    application.add_handler(CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest-homogeneous"))
+    application.add_handler(CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest_skip:"))
+    application.add_handler(CallbackQueryHandler(addcrop_skip_notes_callback, pattern=r"^addcrop_skip_notes$"))
+
+    application.add_handler(CallbackQueryHandler(create_pending_callback, pattern=r"^create_pending:"))
+    application.add_handler(CallbackQueryHandler(mark_paid_callback, pattern=r"^paid_"))
+
+    application.add_handler(CallbackQueryHandler(treatment_date_callback, pattern=r"^treatment_date:"))
+    application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_skip:"))
+    application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_next:"))
 
 # -------------------------
 # FastAPI app + Telegram Application
@@ -389,7 +395,11 @@ async def on_startup():
         raise RuntimeError("Telegram bot token is required")
 
     logger.info("Creating Telegram Application...")
-    telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
+    try:
+        telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
+    except Exception as e:
+        logger.exception(f"Failed to create Telegram Application: {str(e)}")
+        raise
 
     logger.info("Registering handlers...")
     register_handlers(telegram_app)
@@ -402,7 +412,7 @@ async def on_startup():
     if not WEBHOOK_URL:
         logger.error("Missing WEBHOOK_URL environment variable")
         raise RuntimeError("Webhook URL is required")
-    
+
     logger.info(f"Setting Telegram webhook to {WEBHOOK_URL}...")
     async with httpx.AsyncClient() as client:
         try:
@@ -443,4 +453,5 @@ async def on_shutdown():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
+
 
