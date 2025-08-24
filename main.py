@@ -1,25 +1,7 @@
-'''import os
-from fastapi import FastAPI, Request
-from telegram import Update
-from telegram.ext import Application
-
-app = FastAPI()
-
-# Load token from environment
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-
-if not TELEGRAM_TOKEN:
-    raise RuntimeError("TELEGRAM_TOKEN is not set in environment variables!")
-
-# Initialize telegram app
-telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
-'''
-
 import os
 import logging
 import asyncio
 from typing import Optional
-import pkg_resources
 
 from fastapi import FastAPI, Request, Response
 import uvicorn
@@ -378,10 +360,6 @@ async def webhook(request: Request):
 @app.on_event("startup")
 async def on_startup():
     global telegram_app
-
-    # Log dependency versions for debugging
-    logger.info(f"Dependency versions: python-telegram-bot=={pkg_resources.get_distribution('python-telegram-bot').version}, "
-                f"httpx=={pkg_resources.get_distribution('httpx').version}")
 
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
