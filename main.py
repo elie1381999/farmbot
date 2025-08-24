@@ -18,19 +18,14 @@ telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
 
 
 
-
-
-
-
-
 import os
 import logging
-import re
 import asyncio
 from typing import Optional
 
 from fastapi import FastAPI, Request, Response
 import uvicorn
+import httpx
 
 from telegram import Update
 from telegram.ext import (
@@ -47,7 +42,6 @@ import core_singleton
 
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
-
 from aboutcrop import (
     add_crop_start_callback,
     add_crop_name_handler,
@@ -77,7 +71,6 @@ from aboutcrop import (
     harvest_skip_callback,
     HARVEST_STATES,
 )
-
 from aboutmoney import (
     add_expense,
     expense_crop,
@@ -91,7 +84,6 @@ from aboutmoney import (
     EXPENSE_STATES,
     PAYMENT_STATES,
 )
-
 from abouttreatment import (
     add_treatment,
     treatment_crop,
@@ -115,7 +107,6 @@ logger = logging.getLogger(__name__)
 # Helper command handlers
 # -------------------------
 async def cancel(update: Update, context) -> int:
-    # use core_singleton.farm_core (set on startup)
     farmer = core_singleton.farm_core.get_farmer(update.effective_user.id) if core_singleton.farm_core else None
     lang = farmer['language'] if farmer else 'ar'
     if update.message:
@@ -131,7 +122,8 @@ async def help_command(update: Update, context) -> None:
         "❓ مساعدة:\n\n"
         "• 🇱🇧 حسابي: عرض معلومات الحساب\n"
         "• 🌾 محاصيلي: عرض جميع المحاصيل\n"
-        "• 🧾 سجل الحصاد: تسجيل حصاد جديد\n        • 💵 المدفوعات المعلقة: عرض المدفوعات المتوقعة\n"
+        "• 🧾 سجل الحصاد: تسجيل حصاد جديد\n"
+        "• 💵 المدفوعات المعلقة: عرض المدفوعات المتوقعة\n"
         "• 🗓️ التسميد/علاج: إضافة علاج أو تسميد\n"
         "• 💸 مصاريف: تسجيل المصاريف\n"
         "• 📈 الأسعار بالسوق: عرض أسعار السوق\n"
@@ -147,11 +139,9 @@ async def help_command(update: Update, context) -> None:
         "• 📈 Market Prices: View market prices\n"
         "• 📊 Weekly Summary: View weekly summary\n"
     )
-    # handlers usually receive messages; protect against callback_query case
     if update.message:
         await update.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
     else:
-        # fallback
         await update.callback_query.message.reply_text(help_text, reply_markup=get_main_keyboard(lang))
 
 async def my_account(update: Update, context) -> None:
@@ -196,7 +186,6 @@ async def handle_message(update: Update, context) -> None:
 # Handlers registration
 # -------------------------
 def register_handlers(application: Application):
-    # Registration conversation handler
     reg_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
@@ -215,7 +204,7 @@ def register_handlers(application: Application):
             CROP_STATES['CROP_PLANTING_DATE']: [MessageHandler(filters.TEXT & ~filters.COMMAND, add_crop_date_handler)],
             CROP_STATES['CROP_NOTES']: [MessageHandler(filters.TEXT & ~filters.COMMAND, add_crop_notes_handler)],
         },
-        fallbacks=[CommandHandler("cancel", cancel)],
+        fallbacks=[CommandHandler("cancel", cancel), CallbackQueryHandler(addcrop_skip_notes_callback, pattern=r"^addcrop_skip_notes$")],
         allow_reentry=True,
     )
 
@@ -224,7 +213,6 @@ def register_handlers(application: Application):
         states={
             HARVEST_STATES['HARVEST_CROP']: [
                 CallbackQueryHandler(harvest_select_callback, pattern=r"^harvest_select:"),
-                MessageHandler(filters.TEXT & ~filters.COMMAND, None)
             ],
             HARVEST_STATES['HARVEST_DATE']: [
                 CallbackQueryHandler(harvest_date_callback, pattern=r"^harvest_date:"),
@@ -235,7 +223,6 @@ def register_handlers(application: Application):
             ],
             HARVEST_STATES['HARVEST_DELIVERY']: [
                 CallbackQueryHandler(harvest_delivery_callback, pattern=r"^harvest_delivery:"),
-                MessageHandler(filters.TEXT & ~filters.COMMAND, None)
             ],
             HARVEST_STATES['DELIVERY_COLLECTOR']: [
                 CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest_skip:collector$"),
@@ -265,10 +252,19 @@ def register_handlers(application: Application):
     expense_conv = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex("^(💸 مصاريف|💸 Expenses)$"), add_expense)],
         states={
-            EXPENSE_STATES['EXPENSE_CROP']: [CallbackQueryHandler(expense_crop, pattern=r"^expense_crop:"), MessageHandler(filters.TEXT & ~filters.COMMAND, expense_crop)],
-            EXPENSE_STATES['EXPENSE_CATEGORY']: [CallbackQueryHandler(expense_category, pattern=r"^expense_cat:"), MessageHandler(filters.TEXT & ~filters.COMMAND, expense_category)],
+            EXPENSE_STATES['EXPENSE_CROP']: [
+                CallbackQueryHandler(expense_crop, pattern=r"^expense_crop:"),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, expense_crop)
+            ],
+            EXPENSE_STATES['EXPENSE_CATEGORY']: [
+                CallbackQueryHandler(expense_category, pattern=r"^expense_cat:"),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, expense_category)
+            ],
             EXPENSE_STATES['EXPENSE_AMOUNT']: [MessageHandler(filters.TEXT & ~filters.COMMAND, expense_amount)],
-            EXPENSE_STATES['EXPENSE_DATE']: [CallbackQueryHandler(expense_date, pattern=r"^expense_date:"), MessageHandler(filters.TEXT & ~filters.COMMAND, expense_date)],
+            EXPENSE_STATES['EXPENSE_DATE']: [
+                CallbackQueryHandler(expense_date, pattern=r"^expense_date:"),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, expense_date)
+            ],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
         allow_reentry=True,
@@ -309,7 +305,6 @@ def register_handlers(application: Application):
         allow_reentry=True,
     )
 
-    # Register handlers into the application
     application.add_handler(reg_conv_handler)
     application.add_handler(add_crop_conv)
     application.add_handler(harvest_conv_handler)
@@ -331,22 +326,13 @@ def register_handlers(application: Application):
     application.add_handler(CallbackQueryHandler(harvest_select_callback, pattern=r"^harvest_select:"))
     application.add_handler(CallbackQueryHandler(harvest_date_callback, pattern=r"^harvest_date:"))
     application.add_handler(CallbackQueryHandler(harvest_delivery_callback, pattern=r"^harvest_delivery:"))
-    application.add_handler(CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest_skip:"))
-    application.add_handler(CallbackQueryHandler(addcrop_skip_notes_callback, pattern=r"^addcrop_skip_notes$"))
-
-    application.add_handler(CallbackQueryHandler(create_pending_callback, pattern=r"^create_pending:"))
-    application.add_handler(CallbackQueryHandler(mark_paid_callback, pattern=r"^paid_"))
-
-    application.add_handler(CallbackQueryHandler(treatment_date_callback, pattern=r"^treatment_date:"))
-    application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_skip:"))
-    application.add_handler(CallbackQueryHandler(treatment_skip_callback, pattern=r"^treatment_next:"))
+    application.add_handler(CallbackQueryHandler(harvest_skip_callback, pattern=r"^harvest-homogeneous"))
 
 # -------------------------
-# FastAPI app + Telegram Application (created on startup)
+# FastAPI app + Telegram Application
 # -------------------------
 app = FastAPI()
 
-# telegram_app will be created inside on_startup() so each worker/process gets its own instance
 telegram_app: Optional[Application] = None
 
 @app.get("/health")
@@ -355,14 +341,8 @@ async def health():
 
 @app.post("/")
 async def webhook(request: Request):
-    """
-    Receive Telegram update (JSON) and put it on the application's update queue
-    so the registered handlers will process it.
-    """
     global telegram_app
-
     if telegram_app is None:
-        # Not ready yet
         logger.warning("Received webhook while telegram_app is not ready.")
         return Response(status_code=503, content="Telegram app not ready")
 
@@ -372,15 +352,12 @@ async def webhook(request: Request):
         logger.exception("Failed to parse JSON from request")
         return Response(status_code=400, content="Invalid JSON")
 
-    # Convert to Update using telegram_app.bot
     try:
         update = Update.de_json(data, telegram_app.bot)
     except Exception:
-        # In case bot not initialized yet or other parsing problems
         logger.exception("Failed to build Update from JSON")
         return Response(status_code=400, content="Invalid update")
 
-    # Put the update on the application's queue for processing by handlers
     try:
         await telegram_app.update_queue.put(update)
     except Exception:
@@ -390,72 +367,80 @@ async def webhook(request: Request):
     return {"ok": True}
 
 # -------------------------
-# Lifecycle: create/start/stop telegram_app per worker
+# Lifecycle: create/start/stop telegram_app
 # -------------------------
 @app.on_event("startup")
 async def on_startup():
-    """
-    Create, register, initialize and start the telegram Application.
-    Runs inside each worker process.
-    """
     global telegram_app
 
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
     if not SUPABASE_URL or not SUPABASE_KEY:
-        logger.error("SUPABASE_URL and SUPABASE_KEY must be set in environment")
-        raise RuntimeError("Supabase config missing")
+        logger.error("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+        raise RuntimeError("Supabase configuration missing")
 
-    # initialize global farm core (makes core_singleton.farm_core available)
-    logger.info("Initializing FarmCore (Supabase REST client)...")
+    logger.info("Initializing FarmCore...")
     core_singleton.init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
-    logger.info("FarmCore (Supabase REST client) initialized.")
+    logger.info("FarmCore initialized.")
 
-    TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
     if not TELEGRAM_TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN is not set in environment variables.")
-        # Fail fast so deploy doesn't silently start without a token
-        raise RuntimeError("TELEGRAM_BOT_TOKEN is required")
+        logger.error("Missing TELEGRAM_TOKEN environment variable")
+        raise RuntimeError("Telegram bot token is required")
 
-    logger.info("Creating telegram Application...")
+    logger.info("Creating Telegram Application...")
     telegram_app = Application.builder().token(TELEGRAM_TOKEN).build()
 
-    logger.info("Registering handlers into telegram Application...")
+    logger.info("Registering handlers...")
     register_handlers(telegram_app)
 
-    logger.info("Initializing telegram Application...")
+    logger.info("Initializing Telegram Application...")
     await telegram_app.initialize()
 
-    logger.info("Starting telegram Application...")
-    await telegram_app.start()
+    # Set webhook
+    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+    if not WEBHOOK_URL:
+        logger.error("Missing WEBHOOK_URL environment variable")
+        raise RuntimeError("Webhook URL is required")
+    
+    logger.info(f"Setting Telegram webhook to {WEBHOOK_URL}...")
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook",
+                json={"url": WEBHOOK_URL}
+            )
+            result = response.json()
+            if result.get("ok"):
+                logger.info("Telegram webhook set successfully")
+            else:
+                logger.error(f"Failed to set webhook: {result}")
+                raise RuntimeError("Failed to set Telegram webhook")
+        except Exception as e:
+            logger.exception("Error setting Telegram webhook")
+            raise RuntimeError(f"Webhook setup failed: {str(e)}")
 
-    # At this point telegram_app.update_queue exists and the webhook can put updates onto it
+    logger.info("Starting Telegram Application...")
+    await telegram_app.start()
     logger.info("Telegram Application started.")
 
 @app.on_event("shutdown")
 async def on_shutdown():
-    """
-    Stop and shutdown the telegram application cleanly when the process shuts down.
-    """
     global telegram_app
     if telegram_app is None:
         return
 
-    logger.info("Stopping telegram Application (stop/shutdown)...")
+    logger.info("Stopping Telegram Application...")
     try:
         await telegram_app.stop()
         await telegram_app.shutdown()
     except Exception:
-        logger.exception("Error while stopping/shutting down telegram application")
+        logger.exception("Error during Telegram application shutdown")
     finally:
         telegram_app = None
     logger.info("Telegram Application stopped.")
 
-# -------------------------
-# Local dev entrypoint
-# -------------------------
 if __name__ == "__main__":
-    # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
