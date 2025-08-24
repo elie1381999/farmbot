@@ -18,7 +18,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from farmcore import FarmCore  # Import FarmCore directly
+from farmcore import farm_core, init_farm_core  # Import from farmcore.py
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 from aboutcrop import (
@@ -81,14 +81,6 @@ logging.basicConfig(
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
-
-# Singleton FarmCore instance
-farm_core: Optional[FarmCore] = None
-
-def init_farm_core(supabase_url: str, supabase_key: str) -> None:
-    global farm_core
-    if farm_core is None:
-        farm_core = FarmCore(supabase_url=supabase_url, supabase_key=supabase_key)
 
 # -------------------------
 # Helper command handlers
@@ -409,7 +401,7 @@ async def webhook(request: Request):
 # -------------------------
 @app.on_event("startup")
 async def on_startup():
-    global telegram_app, farm_core
+    global telegram_app
 
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -1442,4 +1434,5 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
 '''
+
 
