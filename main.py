@@ -1,4 +1,4 @@
-import os
+'''import os
 from fastapi import FastAPI, Request
 from telegram import Update
 from telegram.ext import Application
@@ -13,6 +13,7 @@ if not TELEGRAM_TOKEN:
 
 # Initialize telegram app
 telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
+'''
 
 
 
@@ -22,8 +23,7 @@ telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
 
 
 
-
-'''import os
+import os
 import logging
 import re
 import asyncio
@@ -458,5 +458,4 @@ if __name__ == "__main__":
     # Useful when running locally (uvicorn will start FastAPI and call our startup events)
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
-'''
 
