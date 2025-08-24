@@ -1,10 +1,13 @@
-# onboarding.py
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ContextTypes, ConversationHandler
 import re
 from datetime import datetime, date, timedelta
+import logging
 from core_singleton import farm_core
 from keyboards import get_main_keyboard
+
+# Logging
+logger = logging.getLogger(__name__)
 
 ONBOARD_STATES = {
     'LANGUAGE': 0,
@@ -17,6 +20,13 @@ ONBOARD_STATES = {
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.effective_user
     telegram_id = user.id
+    if farm_core is None:
+        logger.error("FarmCore is not initialized in start function")
+        await update.message.reply_text(
+            "خطأ في الخادم، يرجى المحاولة لاحقًا." if context.user_data.get('language', 'ar') == 'ar' else
+            "Server error, please try again later."
+        )
+        return ConversationHandler.END
     farmer = farm_core.get_farmer(telegram_id)
 
     if farmer:
@@ -66,6 +76,13 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return ONBOARD_STATES['VILLAGE']
 
 async def get_village(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    if farm_core is None:
+        logger.error("FarmCore is not initialized in get_village function")
+        await update.message.reply_text(
+            "خطأ في الخادم، يرجى المحاولة لاحقًا." if context.user_data.get('language', 'ar') == 'ar' else
+            "Server error, please try again later."
+        )
+        return ConversationHandler.END
     context.user_data['village'] = update.message.text
     telegram_id = update.effective_user.id
     farmer = farm_core.create_farmer(
@@ -86,4 +103,3 @@ async def get_village(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
             "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى." if lang == 'ar' else "Error creating account. Please try again."
         )
     return ConversationHandler.END
-
