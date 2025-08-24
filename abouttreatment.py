@@ -1,7 +1,7 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from datetime import datetime, date, timedelta
-from core_singleton import farm_core
+from core_singleton import get_farm_core
 from keyboards import get_main_keyboard
 
 
@@ -34,7 +34,6 @@ def _parse_date_input(text: str):
 # Treatment flow (inline-first)
 # ----------------------
 async def add_treatment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """Start treatment flow. Show inline crop buttons inside the conversation."""
     # support called by message or callback
     if update.callback_query:
         query = update.callback_query
@@ -45,6 +44,7 @@ async def add_treatment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         send = update.message.reply_text
         uid = update.effective_user.id
 
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(uid)
     if not farmer:
         await send("Create an account first. Use /start")
@@ -250,6 +250,7 @@ async def treatment_next_date(update: Update, context: ContextTypes.DEFAULT_TYPE
     for k in ("crop_id", "product_name", "treatment_date", "treatment_cost"):
         context.user_data.pop(k, None)
     return ConversationHandler.END
+
 
 
 
