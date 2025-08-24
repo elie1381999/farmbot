@@ -411,10 +411,10 @@ async def on_startup():
 
     logger.info("Initializing FarmCore...")
     try:
-       farmcore.init_farm_core(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
-    if farmcore.farm_core is None:
-          logger.error("FarmCore initialization failed: farmcore.farm_core is None")
-    raise RuntimeError("Failed to initialize FarmCore")
+        farm_core.init(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
+        if farm_core is None:
+            logger.error("FarmCore initialization failed: farm_core is None")
+            raise RuntimeError("Failed to initialize FarmCore")
         logger.info("FarmCore initialized successfully.")
     except Exception as e:
         logger.error(f"Failed to initialize FarmCore: {str(e)}")
@@ -469,6 +469,7 @@ async def on_startup():
     logger.info("Starting Telegram Application...")
     await telegram_app.start()
     logger.info("Telegram Application started.")
+
 
 @app.on_event("shutdown")
 async def on_shutdown():
@@ -1434,6 +1435,7 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
 '''
+
 
 
 
