@@ -15,11 +15,11 @@ if not TELEGRAM_TOKEN:
 telegram_app = Application.builder().token(TELEGRAM_TOKEN).updater(None).build()
 '''
 
-
 import os
 import logging
 import asyncio
 from typing import Optional
+import pkg_resources
 
 from fastapi import FastAPI, Request, Response
 import uvicorn
@@ -379,6 +379,10 @@ async def webhook(request: Request):
 async def on_startup():
     global telegram_app
 
+    # Log dependency versions for debugging
+    logger.info(f"Dependency versions: python-telegram-bot=={pkg_resources.get_distribution('python-telegram-bot').version}, "
+                f"httpx=={pkg_resources.get_distribution('httpx').version}")
+
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -407,7 +411,7 @@ async def on_startup():
     logger.info("Initializing Telegram Application...")
     await telegram_app.initialize()
 
-    # Set webhook
+    # Set webhook with retry
     WEBHOOK_URL = os.getenv("WEBHOOK_URL")
     if not WEBHOOK_URL:
         logger.error("Missing WEBHOOK_URL environment variable")
@@ -415,20 +419,26 @@ async def on_startup():
 
     logger.info(f"Setting Telegram webhook to {WEBHOOK_URL}...")
     async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(
-                f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook",
-                json={"url": WEBHOOK_URL}
-            )
-            result = response.json()
-            if result.get("ok"):
-                logger.info("Telegram webhook set successfully")
-            else:
-                logger.error(f"Failed to set webhook: {result}")
-                raise RuntimeError("Failed to set Telegram webhook")
-        except Exception as e:
-            logger.exception("Error setting Telegram webhook")
-            raise RuntimeError(f"Webhook setup failed: {str(e)}")
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = await client.post(
+                    f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/setWebhook",
+                    json={"url": WEBHOOK_URL}
+                )
+                result = response.json()
+                if result.get("ok"):
+                    logger.info("Telegram webhook set successfully")
+                    break
+                else:
+                    logger.error(f"Failed to set webhook (attempt {attempt + 1}): {result}")
+                    if attempt == max_retries - 1:
+                        raise RuntimeError("Failed to set Telegram webhook after retries")
+            except Exception as e:
+                logger.exception(f"Error setting Telegram webhook (attempt {attempt + 1})")
+                if attempt == max_retries - 1:
+                    raise RuntimeError(f"Webhook setup failed: {str(e)}")
+            await asyncio.sleep(1)  # Wait before retrying
 
     logger.info("Starting Telegram Application...")
     await telegram_app.start()
@@ -453,5 +463,3 @@ async def on_shutdown():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8000"))
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
-
-
