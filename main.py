@@ -18,7 +18,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-import farmcore
+from core_singleton import farm_core
 from keyboards import get_main_keyboard
 from onboarding import start, language_selection, get_name, get_phone, get_village, ONBOARD_STATES
 from aboutcrop import (
@@ -1434,6 +1434,7 @@ if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
 
 '''
+
 
 
 
