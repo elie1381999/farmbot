@@ -1,31 +1,21 @@
+# farmcore.py
 import os
 from supabase import create_client, Client
 from datetime import datetime, date, timedelta
 from typing import List, Dict, Any, Optional
-import logging
+from dotenv import load_dotenv
 
-# Logging
-logger = logging.getLogger(__name__)
-
-# Only load dotenv for local development
-if os.getenv("RENDER") != "true":
-    from dotenv import load_dotenv
-    load_dotenv()
-
-# Singleton FarmCore instance
-farm_core: Optional['FarmCore'] = None
-
-def init_farm_core(supabase_url: str, supabase_key: str) -> None:
-    global farm_core
-    if farm_core is None:
-        farm_core = FarmCore(supabase_url=supabase_url, supabase_key=supabase_key)
+# Load environment variables
+load_dotenv()
 
 class FarmCore:
-    def __init__(self, supabase_url: str = None, supabase_key: str = None):
-        supabase_url = supabase_url or os.getenv("SUPABASE_URL")
-        supabase_key = supabase_key or os.getenv("SUPABASE_KEY")
+    def __init__(self):
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_KEY")
         if not supabase_url or not supabase_key:
-            raise ValueError("Supabase URL and Key must be provided via environment variables or arguments")
+            raise ValueError(
+                "Supabase URL and Key must be set in environment variables"
+            )
         self.supabase: Client = create_client(supabase_url, supabase_key)
 
     def get_farmer(self, telegram_id: int) -> Optional[Dict[str, Any]]:
@@ -38,8 +28,7 @@ class FarmCore:
                 .execute()
             )
             return response.data
-        except Exception as e:
-            logger.error(f"Error fetching farmer {telegram_id}: {str(e)}")
+        except Exception:
             return None
 
     def create_farmer(
@@ -57,12 +46,8 @@ class FarmCore:
             "village": village,
             "language": language,
         }
-        try:
-            response = self.supabase.table("farmers").insert(farmer_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error creating farmer {telegram_id}: {str(e)}")
-            return None
+        response = self.supabase.table("farmers").insert(farmer_data).execute()
+        return response.data[0] if response.data else None
 
     def add_crop(
         self, farmer_id: str, name: str, planting_date: date, notes: str = None
@@ -70,60 +55,47 @@ class FarmCore:
         crop_data = {
             "farmer_id": farmer_id,
             "name": name,
-            "planting_date": planting_date.isoformat() if isinstance(planting_date, date) else planting_date,
+            "planting_date": planting_date.isoformat() if isinstance(planting_date, (date,)) else planting_date,
             "notes": notes,
         }
-        try:
-            response = self.supabase.table("crops").insert(crop_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error adding crop for farmer {farmer_id}: {str(e)}")
-            return None
+        response = self.supabase.table("crops").insert(crop_data).execute()
+        return response.data[0] if response.data else None
 
     def get_farmer_crops(self, farmer_id: str) -> List[Dict[str, Any]]:
-        try:
-            response = (
-                self.supabase.table("crops")
-                .select("*")
-                .eq("farmer_id", farmer_id)
-                .order("planting_date", desc=False)
-                .execute()
-            )
-            return response.data or []
-        except Exception as e:
-            logger.error(f"Error fetching crops for farmer {farmer_id}: {str(e)}")
-            return []
+        response = (
+            self.supabase.table("crops")
+            .select("*")
+            .eq("farmer_id", farmer_id)
+            .order("planting_date", desc=False)
+            .execute()
+        )
+        return response.data or []
 
     def update_crop(self, crop_id: str, **updates) -> Optional[Dict[str, Any]]:
         if not updates:
             return None
-        if "planting_date" in updates and isinstance(updates["planting_date"], date):
+        # convert dates to isoformat if date objects passed
+        if "planting_date" in updates and isinstance(updates["planting_date"], (date,)):
             updates["planting_date"] = updates["planting_date"].isoformat()
-        try:
-            response = (
-                self.supabase.table("crops")
-                .update(updates)
-                .eq("id", crop_id)
-                .execute()
-            )
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error updating crop {crop_id}: {str(e)}")
-            return None
+        response = (
+            self.supabase.table("crops")
+            .update(updates)
+            .eq("id", crop_id)
+            .execute()
+        )
+        return response.data[0] if response.data else None
 
     def delete_crop(self, crop_id: str) -> bool:
-        try:
-            response = (
-                self.supabase.table("crops")
-                .delete()
-                .eq("id", crop_id)
-                .execute()
-            )
-            return bool(response.data)
-        except Exception as e:
-            logger.error(f"Error deleting crop {crop_id}: {str(e)}")
-            return False
+        response = (
+            self.supabase.table("crops")
+            .delete()
+            .eq("id", crop_id)
+            .execute()
+        )
+        # supabase returns deleted rows in response.data typically
+        return bool(response.data)
 
+    # Existing methods below -- unchanged
     def record_harvest(
         self,
         crop_id: str,
@@ -141,26 +113,18 @@ class FarmCore:
             "notes": notes,
             "status": status,
         }
-        try:
-            response = self.supabase.table("harvests").insert(harvest_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error recording harvest for crop {crop_id}: {str(e)}")
-            return None
+        response = self.supabase.table("harvests").insert(harvest_data).execute()
+        return response.data[0] if response.data else None
 
     def get_stored_harvests(self, farmer_id: str) -> List[Dict[str, Any]]:
-        try:
-            response = (
-                self.supabase.table("harvests")
-                .select("*, crops!inner(*)")
-                .eq("crops.farmer_id", farmer_id)
-                .eq("status", "stored")
-                .execute()
-            )
-            return response.data or []
-        except Exception as e:
-            logger.error(f"Error fetching stored harvests for farmer {farmer_id}: {str(e)}")
-            return []
+        response = (
+            self.supabase.table("harvests")
+            .select("*, crops!inner(*)")
+            .eq("crops.farmer_id", farmer_id)
+            .eq("status", "stored")
+            .execute()
+        )
+        return response.data or []
 
     def record_delivery(
         self,
@@ -169,42 +133,36 @@ class FarmCore:
         collector_name: str = None,
         market: str = None,
     ) -> Dict[str, Any]:
-        try:
-            self.supabase.table("harvests").update({"status": "delivered"}).eq("id", harvest_id).execute()
-            delivery_data = {
-                "harvest_id": harvest_id,
-                "delivery_date": delivery_date.isoformat(),
-                "collector_name": collector_name,
-                "market": market,
+        self.supabase.table("harvests").update({"status": "delivered"}).eq(
+            "id", harvest_id
+        ).execute()
+        delivery_data = {
+            "harvest_id": harvest_id,
+            "delivery_date": delivery_date.isoformat(),
+            "collector_name": collector_name,
+            "market": market,
+        }
+        response = self.supabase.table("deliveries").insert(delivery_data).execute()
+        delivery = response.data[0] if response.data else None
+        if delivery:
+            expected_date = delivery_date + timedelta(days=7)
+            payment_data = {
+                "delivery_id": delivery["id"],
+                "expected_date": expected_date.isoformat(),
+                "status": "pending",
             }
-            response = self.supabase.table("deliveries").insert(delivery_data).execute()
-            delivery = response.data[0] if response.data else None
-            if delivery:
-                expected_date = delivery_date + timedelta(days=7)
-                payment_data = {
-                    "delivery_id": delivery["id"],
-                    "expected_date": expected_date.isoformat(),
-                    "status": "pending",
-                }
-                self.supabase.table("payments").insert(payment_data).execute()
-            return delivery
-        except Exception as e:
-            logger.error(f"Error recording delivery for harvest {harvest_id}: {str(e)}")
-            return None
+            self.supabase.table("payments").insert(payment_data).execute()
+        return delivery
 
     def get_pending_payments(self, farmer_id: str) -> List[Dict[str, Any]]:
-        try:
-            response = (
-                self.supabase.table("payments")
-                .select("*, deliveries!inner(harvests!inner(crops!inner(farmer_id)))")
-                .eq("deliveries.harvests.crops.farmer_id", farmer_id)
-                .eq("status", "pending")
-                .execute()
-            )
-            return response.data or []
-        except Exception as e:
-            logger.error(f"Error fetching pending payments for farmer {farmer_id}: {str(e)}")
-            return []
+        response = (
+            self.supabase.table("payments")
+            .select("*, deliveries!inner(harvests!inner(crops!inner(farmer_id)))")
+            .eq("deliveries.harvests.crops.farmer_id", farmer_id)
+            .eq("status", "pending")
+            .execute()
+        )
+        return response.data or []
 
     def record_payment(
         self, payment_id: str, paid_amount: float, paid_date: date
@@ -214,17 +172,13 @@ class FarmCore:
             "paid_date": paid_date.isoformat(),
             "status": "paid",
         }
-        try:
-            response = (
-                self.supabase.table("payments")
-                .update(payment_data)
-                .eq("id", payment_id)
-                .execute()
-            )
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error recording payment {payment_id}: {str(e)}")
-            return None
+        response = (
+            self.supabase.table("payments")
+            .update(payment_data)
+            .eq("id", payment_id)
+            .execute()
+        )
+        return response.data[0] if response.data else None
 
     def add_treatment(
         self,
@@ -243,29 +197,23 @@ class FarmCore:
             "next_due_date": next_due_date.isoformat() if next_due_date else None,
             "notes": notes,
         }
-        try:
-            response = self.supabase.table("treatments").insert(treatment_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error adding treatment for crop {crop_id}: {str(e)}")
-            return None
+        response = self.supabase.table("treatments").insert(treatment_data).execute()
+        return response.data[0] if response.data else None
 
-    def get_upcoming_treatments(self, farmer_id: str, days: int = 7) -> List[Dict[str, Any]]:
+    def get_upcoming_treatments(
+        self, farmer_id: str, days: int = 7
+    ) -> List[Dict[str, Any]]:
         today = date.today()
         end_date = today + timedelta(days=days)
-        try:
-            response = (
-                self.supabase.table("treatments")
-                .select("*, crops!inner(*)")
-                .eq("crops.farmer_id", farmer_id)
-                .gte("next_due_date", today.isoformat())
-                .lte("next_due_date", end_date.isoformat())
-                .execute()
-            )
-            return response.data or []
-        except Exception as e:
-            logger.error(f"Error fetching upcoming treatments for farmer {farmer_id}: {str(e)}")
-            return []
+        response = (
+            self.supabase.table("treatments")
+            .select("*, crops!inner(*)")
+            .eq("crops.farmer_id", farmer_id)
+            .gte("next_due_date", today.isoformat())
+            .lte("next_due_date", end_date.isoformat())
+            .execute()
+        )
+        return response.data or []
 
     def add_expense(
         self,
@@ -284,62 +232,57 @@ class FarmCore:
             "crop_id": crop_id,
             "notes": notes,
         }
-        try:
-            response = self.supabase.table("expenses").insert(expense_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error adding expense for farmer {farmer_id}: {str(e)}")
-            return None
+        response = self.supabase.table("expenses").insert(expense_data).execute()
+        return response.data[0] if response.data else None
 
     def get_weekly_summary(self, farmer_id: str) -> Dict[str, Any]:
         start_date = date.today() - timedelta(days=7)
         end_date = date.today()
 
-        try:
-            harvests_response = (
-                self.supabase.table("harvests")
-                .select("*, crops!inner(*)")
-                .eq("crops.farmer_id", farmer_id)
-                .gte("harvest_date", start_date.isoformat())
-                .lte("harvest_date", end_date.isoformat())
-                .execute()
-            )
-            expenses_response = (
-                self.supabase.table("expenses")
-                .select("*")
-                .eq("farmer_id", farmer_id)
-                .gte("expense_date", start_date.isoformat())
-                .lte("expense_date", end_date.isoformat())
-                .execute()
-            )
-            pending_payments = self.get_pending_payments(farmer_id)
+        # Get harvests with crop information
+        harvests_response = (
+            self.supabase.table("harvests")
+            .select("*, crops!inner(*)")  # Get all crop fields, not just farmer_id
+            .eq("crops.farmer_id", farmer_id)
+            .gte("harvest_date", start_date.isoformat())
+            .lte("harvest_date", end_date.isoformat())
+            .execute()
+        )
 
-            harvests_data = harvests_response.data if harvests_response.data else []
-            expenses_data = expenses_response.data if expenses_response.data else []
-            total_harvest = sum(h.get("quantity", 0) for h in harvests_data)
-            total_expenses = sum(e.get("amount", 0) for e in expenses_data)
-            total_pending = 0  # Placeholder: adjust based on actual schema
+        # Get expenses
+        expenses_response = (
+            self.supabase.table("expenses")
+            .select("*")
+            .eq("farmer_id", farmer_id)
+            .gte("expense_date", start_date.isoformat())
+            .lte("expense_date", end_date.isoformat())
+            .execute()
+        )
 
-            return {
-                "total_harvest": total_harvest,
-                "total_expenses": total_expenses,
-                "total_pending": total_pending,
-                "harvests": harvests_data,
-                "expenses": expenses_data,
-                "pending_payments": pending_payments,
-            }
-        except Exception as e:
-            logger.error(f"Error generating weekly summary for farmer {farmer_id}: {str(e)}")
-            return {
-                "total_harvest": 0,
-                "total_expenses": 0,
-                "total_pending": 0,
-                "harvests": [],
-                "expenses": [],
-                "pending_payments": [],
-            }
+        # Get pending payments
+        pending_payments = self.get_pending_payments(farmer_id)
 
-    def get_market_prices(self, crop_name: str = None, limit: int = 10) -> List[Dict[str, Any]]:
+        # Ensure we have lists even if response.data is None
+        harvests_data = harvests_response.data if harvests_response.data else []
+        expenses_data = expenses_response.data if expenses_response.data else []
+
+        # Calculate totals
+        total_harvest = sum(h.get("quantity", 0) for h in harvests_data)
+        total_expenses = sum(e.get("amount", 0) for e in expenses_data)
+        total_pending = sum(p.get("expected_amount", 0) for p in pending_payments)
+
+        return {
+            "total_harvest": total_harvest,
+            "total_expenses": total_expenses,
+            "total_pending": total_pending,
+            "harvests": harvests_data,
+            "expenses": expenses_data,
+            "pending_payments": pending_payments,
+        }
+
+    def get_market_prices(
+        self, crop_name: str = None, limit: int = 10
+    ) -> List[Dict[str, Any]]:
         query = (
             self.supabase.table("market_prices")
             .select("*")
@@ -348,12 +291,8 @@ class FarmCore:
         )
         if crop_name:
             query = query.eq("crop_name", crop_name)
-        try:
-            response = query.execute()
-            return response.data or []
-        except Exception as e:
-            logger.error(f"Error fetching market prices: {str(e)}")
-            return []
+        response = query.execute()
+        return response.data or []
 
     def add_market_price(
         self,
@@ -368,9 +307,7 @@ class FarmCore:
             "price_per_kg": price_per_kg,
             "source": source,
         }
-        try:
-            response = self.supabase.table("market_prices").insert(price_data).execute()
-            return response.data[0] if response.data else None
-        except Exception as e:
-            logger.error(f"Error adding market price for {crop_name}: {str(e)}")
-            return None
+        response = self.supabase.table("market_prices").insert(price_data).execute()
+        return response.data[0] if response.data else None
+
+
