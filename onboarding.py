@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 import re
 from datetime import datetime, date, timedelta
 import logging
-from farmcore import farm_core, init_farm_core
+import farmcore
 from keyboards import get_main_keyboard
 
 # Logging
@@ -99,4 +99,5 @@ async def get_village(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
             "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى." if lang == 'ar' else "Error creating account. Please try again."
         )
     return ConversationHandler.END
+
 
