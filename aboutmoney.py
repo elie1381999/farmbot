@@ -1,12 +1,12 @@
 # aboutmoney.py
-# aboutmoney.py
-from venv import logger
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, ConversationHandler
 from datetime import datetime, date, timedelta
-from core_singleton import farm_core
+from core_singleton import get_farm_core
 from keyboards import get_main_keyboard
 
+logger = logging.getLogger(__name__)
 
 EXPENSE_STATES = {
     'EXPENSE_CROP': 0,
@@ -34,16 +34,17 @@ async def add_expense(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
         send = update.message.reply_text
         uid = update.effective_user.id
 
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(uid)
     if not farmer:
         await send("Create an account first. Use /start")
         return ConversationHandler.END
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
 
     crops = farm_core.get_farmer_crops(farmer['id'])
     kb = []
     kb.append([InlineKeyboardButton("بدون محصول" if lang == 'ar' else "No Crop", callback_data="expense_crop:None")])
-    # show up to 8 crops inline (pagination could be added later)
+    # show up to many crops inline (pagination could be added later)
     for c in crops:
         kb.append([InlineKeyboardButton(c['name'], callback_data=f"expense_crop:{c['id']}")])
 
@@ -52,6 +53,8 @@ async def add_expense(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
 async def expense_crop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Handle crop chosen via inline button or typed (fallback)."""
+    farm_core = get_farm_core()
+
     if update.callback_query:
         query = update.callback_query
         await query.answer()
@@ -60,7 +63,7 @@ async def expense_crop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         crop_id = None if val in (None, "None", "None") else val
         context.user_data['crop_id'] = crop_id
         farmer = farm_core.get_farmer(query.from_user.id)
-        lang = farmer['language']
+        lang = farmer.get('language', 'ar')
         # show category inline
         cats = [
             InlineKeyboardButton("بذور" if lang == 'ar' else "Seeds", callback_data="expense_cat:Seeds"),
@@ -72,7 +75,7 @@ async def expense_crop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return EXPENSE_STATES['EXPENSE_CATEGORY']
     else:
         # typed fallback: match crop name to farmer crops
-        text = update.message.text
+        text = update.message.text or ""
         farmer = farm_core.get_farmer(update.effective_user.id)
         crops = farm_core.get_farmer_crops(farmer['id'])
         crop = next((c for c in crops if c['name'] == text), None)
@@ -81,30 +84,32 @@ async def expense_crop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         else:
             context.user_data['crop_id'] = None
         # now proceed to category step (typed)
-        await update.message.reply_text("اختر الفئة أو اكتبها:" if farmer['language']=='ar' else "Choose category or type it:")
+        await update.message.reply_text("اختر الفئة أو اكتبها:" if farmer.get('language', 'ar')=='ar' else "Choose category or type it:")
         return EXPENSE_STATES['EXPENSE_CATEGORY']
 
 async def expense_category(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     if update.callback_query:
         query = update.callback_query
         await query.answer()
         _, cat = query.data.split(":", 1)
         context.user_data['category'] = cat
         farmer = farm_core.get_farmer(query.from_user.id)
-        lang = farmer['language']
+        lang = farmer.get('language', 'ar')
         await query.message.reply_text("أدخل المبلغ (LBP):" if lang == 'ar' else "Enter amount (LBP):")
         return EXPENSE_STATES['EXPENSE_AMOUNT']
     else:
         # typed category
         context.user_data['category'] = update.message.text
         farmer = farm_core.get_farmer(update.effective_user.id)
-        lang = farmer['language']
+        lang = farmer.get('language', 'ar')
         await update.message.reply_text("أدخل المبلغ (LBP):" if lang == 'ar' else "Enter amount (LBP):")
         return EXPENSE_STATES['EXPENSE_AMOUNT']
 
 async def expense_amount(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     try:
         amount = float(update.message.text)
         context.user_data['amount'] = amount
@@ -121,12 +126,14 @@ async def expense_amount(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def expense_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # handles both inline callbacks and typed dates
+    farm_core = get_farm_core()
+
     if update.callback_query:
         query = update.callback_query
         await query.answer()
         data = query.data or ""
         farmer = farm_core.get_farmer(query.from_user.id)
-        lang = farmer['language']
+        lang = farmer.get('language', 'ar')
         if data.endswith(":today"):
             expense_date_val = date.today()
         elif data.endswith(":pick"):
@@ -135,11 +142,12 @@ async def expense_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         else:
             await query.message.reply_text("خيار غير معروف." if lang=='ar' else "Unknown option.")
             return EXPENSE_STATES['EXPENSE_DATE']
+        uid = query.from_user.id
     else:
         # typed date handling
-        text = update.message.text.strip()
+        text = (update.message.text or "").strip()
         farmer = farm_core.get_farmer(update.effective_user.id)
-        lang = farmer['language']
+        lang = farmer.get('language', 'ar')
         try:
             if text in ["اليوم", "Today"]:
                 expense_date_val = date.today()
@@ -148,9 +156,10 @@ async def expense_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         except Exception:
             await update.message.reply_text("صيغة التاريخ غير صحيحة. استخدم YYYY-MM-DD" if lang=='ar' else "Invalid date format. Use YYYY-MM-DD")
             return EXPENSE_STATES['EXPENSE_DATE']
+        uid = update.effective_user.id
 
     # Save expense
-    farmer = farm_core.get_farmer(update.effective_user.id if update.message else update.callback_query.from_user.id)
+    farmer = farm_core.get_farmer(uid)
     expense = farm_core.add_expense(
         farmer_id=farmer['id'],
         expense_date=expense_date_val,
@@ -160,14 +169,14 @@ async def expense_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     )
     if expense:
         if update.callback_query:
-            await update.callback_query.message.reply_text("تم تسجيل المصروف! ✅" if farmer['language']=='ar' else "Expense recorded! ✅", reply_markup=get_main_keyboard(farmer['language']))
+            await update.callback_query.message.reply_text("تم تسجيل المصروف! ✅" if farmer.get('language','ar')=='ar' else "Expense recorded! ✅", reply_markup=get_main_keyboard(farmer.get('language', 'ar')))
         else:
-            await update.message.reply_text("تم تسجيل المصروف! ✅" if farmer['language']=='ar' else "Expense recorded! ✅", reply_markup=get_main_keyboard(farmer['language']))
+            await update.message.reply_text("تم تسجيل المصروف! ✅" if farmer.get('language','ar')=='ar' else "Expense recorded! ✅", reply_markup=get_main_keyboard(farmer.get('language', 'ar')))
     else:
         if update.callback_query:
-            await update.callback_query.message.reply_text("خطأ في تسجيل المصروف." if farmer['language']=='ar' else "Error recording expense.")
+            await update.callback_query.message.reply_text("خطأ في تسجيل المصروف." if farmer.get('language','ar')=='ar' else "Error recording expense.")
         else:
-            await update.message.reply_text("خطأ في تسجيل المصروف." if farmer['language']=='ar' else "Error recording expense.")
+            await update.message.reply_text("خطأ في تسجيل المصروف." if farmer.get('language','ar')=='ar' else "Error recording expense.")
     # cleanup
     for k in ("category", "amount", "crop_id"):
         context.user_data.pop(k, None)
@@ -178,11 +187,13 @@ async def expense_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 # ----------------------
 async def pending_payments(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Show payments that are pending and any delivered harvests without delivery/payment."""
-    farmer = farm_core.get_farmer(update.effective_user.id)
+    farm_core = get_farm_core()
+    uid = update.effective_user.id
+    farmer = farm_core.get_farmer(uid)
     if not farmer:
         await update.message.reply_text("Create an account first. Use /start")
         return ConversationHandler.END
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
 
     # 1) payments with status 'pending' (joined to deliveries/harvests)
     payments = farm_core.get_pending_payments(farmer['id'])
@@ -198,9 +209,9 @@ async def pending_payments(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             try:
                 delivery = payment.get('deliveries') or {}
                 harvest = delivery.get('harvests') if isinstance(delivery, dict) else None
-                crop = harvest.get('crops') if harvest else None
-                crop_name = crop.get('name') if crop else "Unknown"
-                qty = harvest.get('quantity') if harvest else "?"
+                crop = harvest.get('crops') if isinstance(harvest, dict) and harvest else None
+                crop_name = crop.get('name') if isinstance(crop, dict) else "Unknown"
+                qty = harvest.get('quantity') if isinstance(harvest, dict) else "?"
                 expected_date = payment.get('expected_date', 'N/A')
                 amount = payment.get('expected_amount', 'N/A')
             except Exception:
@@ -216,7 +227,6 @@ async def pending_payments(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             await update.message.reply_text(text, reply_markup=kb)
 
     # 2) find delivered harvests that have no delivery row -> show as "delivered but no payment recorded"
-    # (helpful for users who set harvest status to delivered but didn't run the delivery flow)
     delivered_resp = farm_core.supabase.table("harvests").select("*, crops!inner(*)").eq("status", "delivered").eq("crops.farmer_id", farmer['id']).execute()
     delivered = delivered_resp.data or []
     extra_count = 0
@@ -243,11 +253,13 @@ async def pending_payments(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 async def create_pending_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Create a delivery+payment for a harvest that was delivered but had no delivery recorded."""
+    farm_core = get_farm_core()
+
     query = update.callback_query
     await query.answer()
     data = query.data or ""
     farmer = farm_core.get_farmer(query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar')
     try:
         _, harvest_id = data.split(":", 1)
     except Exception:
@@ -267,15 +279,15 @@ async def create_pending_callback(update: Update, context: ContextTypes.DEFAULT_
         await query.message.reply_text("خطأ أثناء الإنشاء." if lang == 'ar' else "Error creating pending entry.")
     return ConversationHandler.END
 
-# Mark Paid flow: two entry sources:
-# - paid_{payment_id} (existing payment row)
-# - paid_direct:{harvest_id} (delivered harvest without payment -> we'll create a payment record then mark paid)
+# Mark Paid flow
 async def mark_paid_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
+
     query = update.callback_query
     await query.answer()
     data = query.data or ""
     farmer = farm_core.get_farmer(query.from_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar')
 
     # pattern: paid_<payment_id>  OR paid_direct:<harvest_id>
     if data.startswith("paid_"):
@@ -285,9 +297,7 @@ async def mark_paid_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await query.message.reply_text("أدخل المبلغ المدفوع (LBP):" if lang == 'ar' else "Enter amount paid (LBP):")
         return PAYMENT_STATES['PAYMENT_AMOUNT']
     if data.startswith("paid_direct:"):
-        # create a payment row for the harvest first (we'll insert a payment with status 'pending' and then record amount)
         harvest_id = data.split(":", 1)[1]
-        # create a delivery entry first (so payments can link to delivery) - minimal data
         delivery = farm_core.record_delivery(
             harvest_id=harvest_id,
             delivery_date=date.today(),
@@ -297,12 +307,9 @@ async def mark_paid_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
         if not delivery:
             await query.message.reply_text("خطأ أثناء إنشاء الإدخال." if lang == 'ar' else "Error creating entry.")
             return ConversationHandler.END
-        # find the payment created (assuming record_delivery inserted a payment row)
-        # find payments where delivery_id == delivery['id'] and status == 'pending'
         resp = farm_core.supabase.table("payments").select("*").eq("delivery_id", delivery['id']).execute()
         payments = resp.data or []
         if not payments:
-            # fallback: create a payment row manually
             pay_resp = farm_core.supabase.table("payments").insert({
                 "delivery_id": delivery['id'],
                 "expected_date": (date.today() + timedelta(days=7)).isoformat(),
@@ -319,8 +326,10 @@ async def mark_paid_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
     return ConversationHandler.END
 
 async def payment_amount(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    farm_core = get_farm_core()
+
     farmer = farm_core.get_farmer(update.effective_user.id)
-    lang = farmer['language'] if farmer else 'ar'
+    lang = farmer.get('language', 'ar')
     try:
         amount = float(update.message.text)
     except ValueError:
@@ -350,18 +359,19 @@ async def payment_amount(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 # ----------------------
 # Market prices
 async def market_prices(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    farm_core = get_farm_core()
     farmer = farm_core.get_farmer(update.effective_user.id)
     if not farmer:
         await update.message.reply_text("Create an account first. Use /start")
         return
-    lang = farmer['language']
+    lang = farmer.get('language', 'ar')
     prices = farm_core.get_market_prices()
     if not prices:
         await update.message.reply_text("لا توجد أسعار سوق حاليًا." if lang == 'ar' else "No market prices available.")
         return
     message = "📈 أسعار السوق:\n\n" if lang == 'ar' else "📈 Market Prices:\n\n"
     for price in prices:
-        message += f"• {price['crop_name']}: {price['price_per_kg']} LBP/kg ({price['price_date']})\n"
+        message += f"• {price.get('crop_name','Unknown')}: {price.get('price_per_kg','N/A')} LBP/kg ({price.get('price_date','-')})\n"
     await update.message.reply_text(message, reply_markup=get_main_keyboard(lang))
 
 # aboutmoney.py - weekly_summary function
@@ -370,6 +380,8 @@ async def weekly_summary(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     Robust weekly summary that tolerates missing fields / different nested shapes.
     Works with update.message or update.callback_query and always shows main keyboard.
     """
+    farm_core = get_farm_core()
+
     # determine sender + reply function (support callback_query-based calls too)
     if getattr(update, "callback_query", None):
         query = update.callback_query
@@ -447,7 +459,6 @@ async def weekly_summary(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 if isinstance(crops_data, dict):
                     return crops_data.get("name", "Unknown")
                 elif isinstance(crops_data, list) and crops_data:
-                    # If crops is a list, take the first item
                     first_crop = crops_data[0]
                     if isinstance(first_crop, dict):
                         return first_crop.get("name", "Unknown")
@@ -546,6 +557,3 @@ async def weekly_summary(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
 
         await send(short, reply_markup=get_main_keyboard(lang))
-
-
-
